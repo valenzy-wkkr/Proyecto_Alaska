@@ -1,16 +1,17 @@
-# Configuración de Base de Datos - Alaska Dashboard
 
-## Pasos para conectar el dashboard a phpMyAdmin
+# Configuración de Base de Datos - Proyecto Alaska
 
-### 1. Crear las tablas en la base de datos
+## Pasos para configurar la base de datos en XAMPP (phpMyAdmin)
+
+### 1. Crear la base de datos y las tablas
 
 1. Abre phpMyAdmin en tu navegador: `http://localhost/phpmyadmin`
-2. Selecciona tu base de datos `alaska`
-3. Ve a la pestaña "SQL"
-4. Ejecuta el archivo `php/crear_tablas.php` o copia y pega el siguiente SQL:
+2. Crea una base de datos llamada `alaska`.
+3. Selecciona la base de datos `alaska`.
+4. Ve a la pestaña "SQL" y ejecuta el siguiente código, o abre en el navegador el archivo `php/crear_tablas.php`:
 
 ```sql
--- Crear tabla de usuarios
+-- Tabla de usuarios
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
@@ -19,7 +20,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Crear tabla de mascotas
+-- Tabla de mascotas
 CREATE TABLE IF NOT EXISTS mascotas (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
@@ -34,7 +35,7 @@ CREATE TABLE IF NOT EXISTS mascotas (
     fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Crear tabla de recordatorios
+-- Tabla de recordatorios
 CREATE TABLE IF NOT EXISTS recordatorios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
@@ -53,64 +54,42 @@ CREATE TABLE IF NOT EXISTS recordatorios (
 
 ### 2. Verificar la conexión
 
-1. Asegúrate de que XAMPP esté ejecutándose
-2. Verifica que MySQL esté activo
-3. Abre `http://localhost/Alaska-6/php/crear_tablas.php` en tu navegador
-4. Deberías ver mensajes de confirmación de que las tablas se crearon correctamente
+1. Asegúrate de que XAMPP esté ejecutándose y MySQL esté activo.
+2. Abre `http://localhost/Proyecto_Alaska/php/crear_tablas.php` en tu navegador para crear las tablas automáticamente.
+3. Si todo es correcto, verás mensajes de confirmación.
 
 ### 3. Configurar el usuario de sesión
 
-Para que funcione correctamente, necesitas configurar la sesión del usuario. Puedes hacer esto de dos maneras:
-
-#### Opción A: Modificar temporalmente para pruebas
-En `dashboard.php`, cambia esta línea:
-```php
-$usuario_id = $_SESSION['usuario']['id'] ?? 1;
-```
-Por:
-```php
-$usuario_id = 1; // Usuario de prueba
-```
-
-#### Opción B: Configurar el sistema de login
-Asegúrate de que tu sistema de login esté guardando correctamente los datos del usuario en `$_SESSION['usuario']`.
+El sistema de login guarda los datos del usuario en `$_SESSION['usuario']`. Si necesitas hacer pruebas sin login, puedes forzar el ID de usuario en los scripts PHP.
 
 ### 4. Probar la funcionalidad
 
-1. Abre `http://localhost/Alaska-6/dashboard.php`
-2. Las estadísticas deberían mostrar 0 para todas las métricas inicialmente
-3. Prueba agregar una mascota usando el botón "Agregar Mascota"
-4. Prueba agregar un recordatorio usando el botón "Agregar" en la sección de recordatorios
-5. Los datos deberían guardarse en la base de datos y mostrarse en el dashboard
+1. Accede a `http://localhost/Proyecto_Alaska/dashboard.php`.
+2. Agrega mascotas y recordatorios desde la interfaz.
+3. Verifica que los datos se guarden y muestren correctamente.
 
-### 5. Archivos creados/modificados
+### 5. Archivos relevantes
 
-- `php/crear_tablas.php` - Script para crear las tablas
-- `php/mascotas.php` - API para manejar mascotas
-- `php/recordatorios.php` - API para manejar recordatorios
-- `dashboard.php` - Modificado para conectar con la BD
-- `js/dashboard.js` - Modificado para usar las APIs PHP
+- `php/crear_tablas.php`: Script para crear las tablas.
+- `php/mascotas.php`: API para gestión de mascotas.
+- `php/recordatorios.php`: API para recordatorios.
+- `php/conexion.php`: Configuración de conexión a la base de datos.
+- `dashboard.php`: Panel principal.
 
 ### 6. Estructura de la base de datos
 
-- **usuarios**: Almacena información de los usuarios
-- **mascotas**: Almacena información de las mascotas de cada usuario
-- **recordatorios**: Almacena los recordatorios asociados a cada mascota
+- **usuarios**: Información de los usuarios.
+- **mascotas**: Mascotas de cada usuario.
+- **recordatorios**: Recordatorios asociados a cada mascota.
 
 ### 7. Solución de problemas
 
-Si encuentras errores:
+1. Verifica que XAMPP esté ejecutándose.
+2. Revisa que la base de datos `alaska` exista.
+3. Verifica las credenciales en `php/conexion.php`.
+4. Revisa la consola del navegador para errores de JavaScript.
+5. Verifica los logs de error de PHP en XAMPP.
 
-1. Verifica que XAMPP esté ejecutándose
-2. Revisa que la base de datos `alaska` exista
-3. Verifica las credenciales en `php/conexion.php`
-4. Revisa la consola del navegador para errores de JavaScript
-5. Verifica los logs de error de PHP en XAMPP
+---
 
-### 8. Próximos pasos
-
-Una vez que todo funcione:
-1. Implementa el sistema de autenticación completo
-2. Agrega validaciones de seguridad
-3. Implementa la funcionalidad de editar/eliminar mascotas y recordatorios
-4. Agrega más funcionalidades al dashboard
+**Última actualización:** 18 de septiembre de 2025
