@@ -1,5 +1,13 @@
 // Autenticación básica en cliente para demo (no usar en producción)
 (function() {
+  // Detectar prefijo base cuando el proyecto corre bajo un subdirectorio (ej: /Proyecto_Alaska4)
+  const BASE = (function(){
+    try{
+      const p = location.pathname;
+      const m = p.match(/^(\/Proyecto_Alaska4)(?:\/|$)/);
+      return m ? m[1] : '';
+    }catch(_){ return ''; }
+  })();
   const STORAGE_KEYS = {
     loggedIn: 'alaska_loggedIn',
     user: 'alaska_user',
@@ -38,14 +46,14 @@
     }
     localStorage.setItem(STORAGE_KEYS.loggedIn, 'true');
     localStorage.setItem(STORAGE_KEYS.user, JSON.stringify({ id: userObj.id, email: userObj.email, name: userObj.name, username: userObj.username }));
-    window.location.href = '/dashboard';
+    window.location.href = BASE + '/public/dashboard.php';
     return true;
   }
 
   function logout() {
     localStorage.removeItem(STORAGE_KEYS.loggedIn);
     localStorage.removeItem(STORAGE_KEYS.user);
-    window.location.href = '/';
+    window.location.href = BASE + '/index.html';
   }
 
   function applyAuthUI() {
@@ -161,8 +169,10 @@
   }
 
   function protectDashboard() {
-    if (location.pathname.toLowerCase().startsWith('/dashboard') && !isLoggedIn()) {
-      location.href = '/login';
+    const path = location.pathname.toLowerCase();
+    const isDash = path.endsWith('/public/dashboard.php') || path.endsWith('/dashboard.php');
+    if (isDash && !isLoggedIn()) {
+      location.href = BASE + '/public/auth/login.php';
     }
   }
 

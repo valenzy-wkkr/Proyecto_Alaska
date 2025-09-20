@@ -44,7 +44,7 @@
                 <li><a href="html/citas.html">Citas</a></li>
                 <li><a href="html/blog.html">Blog</a></li>
                 <li><a href="#registro" class="boton-nav">Registrarse</a></li>
-                <li><a href="php/dashboard.php" class="inicial-circulo">U</a></li>
+                <li><a href="public/dashboard.php" class="inicial-circulo">U</a></li>
             </ul>
         </nav>
       </div>
@@ -146,7 +146,7 @@
 
 
 
-                    <form id="registrationForm" class="formulario-registro" action="php/registro.php" method="POST" onsubmit="return handleRegistration(event)">
+                    <form id="registrationForm" class="formulario-registro" action="public/api/auth/register.php" method="POST">
                         <div class="grupo-formulario">
                             <label for="nombre">Nombre Completo</label>
                             <div class="entrada-con-icono">
@@ -187,7 +187,7 @@
                             <label for="terminos">Acepto los términos y condiciones</label>
                         </div>
                         <input type="submit" value="Registrarse" class="boton-primario boton-completo">
-                        <p class="enlace-login">¿Ya tienes una cuenta? <a href="php/login.php">Inicia sesión</a></p>
+                        <p class="enlace-login">¿Ya tienes una cuenta? <a href="public/auth/login.php">Inicia sesión</a></p>
                     </form>
 
 
@@ -303,32 +303,49 @@
     <script src="assets/js/app.js"></script>
     <script>
         function handleRegistration(event) {
+            event.preventDefault();
             try {
-                // Validar el formulario
                 const form = event.target;
                 if (!form.checkValidity()) {
-                    event.preventDefault();
                     event.stopPropagation();
                     form.classList.add('was-validated');
                     return false;
                 }
-                
-                // Obtener datos del formulario
+
                 const formData = new FormData(form);
-                const userData = {
-                    name: formData.get('nombre'),
-                    username: formData.get('apodo'),
-                    email: formData.get('correo'),
-                    address: formData.get('direccion')
+                const payload = {
+                    nombre: formData.get('nombre'),
+                    correo: formData.get('correo'),
+                    clave: formData.get('clave'),
+                    apodo: formData.get('apodo'),
+                    direccion: formData.get('direccion')
                 };
-                
-                // Guardar en localStorage
-                localStorage.setItem('currentUser', JSON.stringify(userData));
-                
-                // Continuar con el envío del formulario
-                return true;
+
+                fetch('public/api/auth/register.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                })
+                .then(async (res) => {
+                    const isJson = res.headers.get('content-type')?.includes('application/json');
+                    const data = isJson ? await res.json() : null;
+                    if (res.ok && data && data.success) {
+                        window.location.href = 'public/dashboard.php';
+                        return;
+                    }
+                    const message = (data && data.error) ? data.error : 'No se pudo completar el registro';
+                    alert(message);
+                })
+                .catch((err) => {
+                    console.error('Error al registrar:', err);
+                    alert('Error de red al intentar registrar.');
+                });
+                return false;
             } catch (error) {
                 console.error('Error en handleRegistration:', error);
+                alert('Ocurrió un error inesperado.');
                 return false;
             }
         }

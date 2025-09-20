@@ -5,8 +5,9 @@
 // Usamos window.MenuView y window.ButtonView directamente para evitar redeclaración
 // const ButtonView = window.ButtonView; // Comentado para evitar redeclaración
 // const FormView = window.FormView; // Comentado para evitar redeclaración
-const Validator = window.Validator;
-const ErrorHandlerClass = window.ErrorHandler;
+// Evitar colisiones globales si el archivo se carga más de una vez
+var ValidatorClass = (typeof window !== 'undefined') ? window.Validator : undefined;
+var ErrorHandlerClass = (typeof window !== 'undefined') ? window.ErrorHandler : undefined;
 
 /**
  * Clase principal de la aplicación
@@ -50,7 +51,7 @@ class App {
   this.errorHandler = ErrorHandlerClass ? new ErrorHandlerClass() : { handleError: console.error };
       
       // Inicializar validador
-  this.validator = Validator ? new Validator() : null;
+  this.validator = (typeof ValidatorClass === 'function') ? new ValidatorClass() : null;
       
       // Inicializar conexión a base de datos
   // Saltar inicialización de base de datos en cliente
@@ -146,7 +147,9 @@ class App {
       
       // Establecer enlace activo según la ruta actual
       const path = window.location.pathname;
-      this.menuView.setActiveLink(path);
+      if (this.menuView && typeof this.menuView.setActiveLink === 'function') {
+        this.menuView.setActiveLink(path);
+      }
     } catch (error) {
       this.errorHandler.handleError(error, 'App.initMenuView');
     }
@@ -208,7 +211,7 @@ class App {
           return; // Estos los maneja utils/auth.js
         }
         // Crear vista de formulario
-  const formView = FormView ? new FormView(form) : null;
+        const formView = (window.FormView && typeof window.FormView === 'function') ? new window.FormView(form) : null;
         this.formViews.push(formView);
       });
     } catch (error) {
@@ -290,7 +293,7 @@ class App {
   // No hay base de datos en cliente
       
       // Cerrar logger
-      if (this.logger) {
+      if (this.logger && typeof this.logger.close === 'function') {
         this.logger.close();
       }
       
@@ -343,10 +346,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           adaptAll();
           return;
         }
-        // En HTTP/HTTPS: detectar si el servidor NO soporta rutas bonitas y adaptar
-        fetch('/blog', { cache: 'no-store' }).then(r => {
-          if (!r || !r.ok) adaptAll();
-        }).catch(() => adaptAll());
+        // En HTTP/HTTPS, no intentar detección mediante fetch para evitar 404 en consola
+        // Las rutas ya están definidas en el HTML con el prefijo correcto cuando aplica.
       }catch{ /* no-op */ }
     })();
 

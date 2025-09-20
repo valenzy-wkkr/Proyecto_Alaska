@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             try {
                 // Enviar datos al servidor
-                const response = await fetch('php/recordatorios.php', {
+                const response = await fetch('api/recordatorios.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

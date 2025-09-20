@@ -7,7 +7,9 @@ class ErrorHandler {
    * Constructor de la clase ErrorHandler
    */
   constructor() {
-    this.isDevelopment = process.env.NODE_ENV === 'development';
+    // Evitar ReferenceError en navegador si process no existe
+    const nodeEnv = (typeof process !== 'undefined' && process && process.env) ? process.env.NODE_ENV : '';
+    this.isDevelopment = nodeEnv === 'development';
     this.logger = console; // En una implementación real, se usaría un logger como Winston
   }
 

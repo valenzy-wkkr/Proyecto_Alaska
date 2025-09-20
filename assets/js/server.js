@@ -418,8 +418,8 @@ try {
     if (pathname === '/') pathname = '/index.html';
   if (pathname === '/blog') pathname = '/html/blog.html';
   if (pathname === '/contacto') pathname = '/html/contacto.html';
-  if (pathname === '/login') pathname = '/php/login.php';
-  if (pathname === '/dashboard') pathname = '/php/dashboard.php';
+  if (pathname === '/login') pathname = '/public/auth/login.php';
+  if (pathname === '/dashboard') pathname = '/public/dashboard.php';
 
     // Evitar path traversal
     const safePath = path.normalize(path.join(__dirname, '..', '..', pathname)).replace(/\\/g, '/');

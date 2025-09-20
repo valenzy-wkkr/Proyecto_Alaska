@@ -1,7 +1,7 @@
 // Clase para manejar las operaciones de citas
 class CitasManager {
     constructor() {
-        this.apiUrl = '../php/procesar_citas.php';
+        this.apiUrl = '../public/api/citas.php';
         this.citas = [];
         this.init();
     }
@@ -84,6 +84,19 @@ class CitasManager {
             if (resultado.exito) {
                 this.mostrarExito('Cita creada exitosamente');
                 formulario.reset();
+                // Notificar al dashboard que hay una nueva cita
+                try {
+                    const creada = resultado.cita || { ...datosCita };
+                    // Normalizar estado para el dashboard si fuera necesario
+                    if (!creada.estado && creada.status) creada.estado = creada.status;
+                    // Emitir evento dentro de la misma pestaña
+                    window.dispatchEvent(new CustomEvent('appointment:created', { detail: creada }));
+                    // Señal entre pestañas/ventanas
+                    localStorage.setItem('alaska_appointments_updated', String(Date.now()));
+                } catch (e) {
+                    console.warn('No se pudo emitir evento de creación de cita:', e);
+                }
+
                 this.cargarCitas(); // Recargar la lista
             } else {
                 this.mostrarError('Error al crear la cita: ' + resultado.mensaje);

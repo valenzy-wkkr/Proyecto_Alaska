@@ -54,20 +54,52 @@ class Dashboard {
                 this.closeAllModals();
             }
         });
+
+        // Escuchar creación de citas desde otras vistas (mismo tab)
+        window.addEventListener('appointment:created', (e) => {
+            try {
+                const appt = e.detail || {};
+                // Normalizaciones mínimas
+                if (appt && (!appt.status && appt.estado)) {
+                    appt.status = appt.estado;
+                }
+                if (appt && (!appt.petName && appt.nombre_mascota)) {
+                    appt.petName = appt.nombre_mascota;
+                }
+                // Si no trae estado, asumir "programada" para reflejar el alta inmediata
+                if (appt && !appt.status) {
+                    appt.status = 'programada';
+                }
+                this.appointments.push(appt);
+                this.updateStats();
+            } catch (err) {
+                console.warn('No se pudo procesar appointment:created:', err);
+            }
+        });
+
+        // Escuchar señales entre pestañas/ventanas para recargar citas y actualizar contador
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'alaska_appointments_updated' && e.newValue) {
+                // Volver a cargar citas y refrescar estadísticas
+                this.loadAppointments().then(() => this.updateStats()).catch(() => {});
+            }
+        });
     }
 
     /**
      * Carga los datos del usuario desde localStorage
      */
     loadUserData() {
-        const userData = localStorage.getItem('currentUser');
+        // Intentar obtener desde storage del flujo de autenticación del sitio
+        const storedAuth = localStorage.getItem('alaska_user');
+        const legacy = localStorage.getItem('currentUser');
+        const userData = storedAuth || legacy;
         if (userData) {
-            this.currentUser = JSON.parse(userData);
-            this.updateUserDisplay();
+            try { this.currentUser = JSON.parse(userData); } catch { this.currentUser = null; }
         } else {
-            // Si no hay usuario, redirigir al login
-            window.location.href = '../index.html';
+            this.currentUser = null; // Con sesión PHP basta; no forzar redirección
         }
+        this.updateUserDisplay();
     }
 
     /**
@@ -75,8 +107,13 @@ class Dashboard {
      */
     updateUserDisplay() {
         const userNameElement = document.getElementById('userName');
-        if (userNameElement && this.currentUser) {
-            userNameElement.textContent = this.currentUser.name;
+        if (!userNameElement) return;
+        const currentText = (userNameElement.textContent || '').trim();
+        // No sobrescribir si PHP ya imprimió el nombre de sesión
+        if (currentText && currentText !== 'Usuario') return;
+        if (this.currentUser) {
+            const name = this.currentUser.name || this.currentUser.username || this.currentUser.email || 'Usuario';
+            userNameElement.textContent = name;
         }
     }
 
@@ -94,6 +131,8 @@ class Dashboard {
             ]);
             
             this.renderDashboard();
+            // Asegurar que las estadísticas reflejen los datos cargados inicialmente
+            this.updateStats();
         } catch (error) {
             console.error('Error cargando datos del dashboard:', error);
             this.showError('Error al cargar los datos del dashboard');
@@ -104,41 +143,19 @@ class Dashboard {
      * Carga las mascotas del usuario
      */
     async loadPets() {
-        console.log('Cargando mascotas...');
-        // Por ahora, siempre usar datos de ejemplo para debug
-        this.pets = [
-                    {
-                        id: 1,
-                        name: 'Luna',
-                        species: 'perro',
-                        breed: 'Golden Retriever',
-                        age: 3.5,
-                        weight: 25.5,
-                        healthStatus: 'healthy',
-                        lastCheckup: '2024-02-15'
-                    },
-                    {
-                        id: 2,
-                        name: 'Mittens',
-                        species: 'gato',
-                        breed: 'Persa',
-                        age: 2.0,
-                        weight: 4.2,
-                        healthStatus: 'healthy',
-                        lastCheckup: '2024-01-20'
-                    },
-                    {
-                        id: 3,
-                        name: 'Max',
-                        species: 'perro',
-                        breed: 'Labrador',
-                        age: 5.0,
-                        weight: 30.0,
-                        healthStatus: 'attention',
-                        lastCheckup: '2024-03-01'
-                    }
-                ];
-        console.log('Mascotas cargadas:', this.pets);
+        console.log('Cargando mascotas desde API...');
+        try {
+            const response = await fetch('api/mascotas.php');
+            if (!response.ok) {
+                throw new Error('HTTP ' + response.status);
+            }
+            const pets = await response.json();
+            this.pets = Array.isArray(pets) ? pets : [];
+            console.log('Mascotas cargadas:', this.pets);
+        } catch (error) {
+            console.error('No se pudieron cargar las mascotas desde la API, usando lista vacía.', error);
+            this.pets = [];
+        }
     }
 
     /**
@@ -190,27 +207,30 @@ class Dashboard {
      */
     async loadAppointments() {
         try {
-            // Simular carga desde API
-            this.appointments = [
-                {
-                    id: 1,
-                    petId: 1,
-                    petName: 'Luna',
-                    date: '2024-03-15T10:00:00',
-                    reason: 'Vacunación anual',
-                    status: 'programada'
-                },
-                {
-                    id: 2,
-                    petId: 2,
-                    petName: 'Mittens',
-                    date: '2024-03-10T14:30:00',
-                    reason: 'Revisión de rutina',
-                    status: 'programada'
-                }
-            ];
+            // Desde dashboard (public/dashboard.php) la ruta relativa a la API es 'api/citas.php'
+            const response = await fetch('api/citas.php');
+            if (!response.ok) {
+                throw new Error('HTTP ' + response.status);
+            }
+            const result = await response.json();
+
+            // Estructura esperada desde PHP: { exito: boolean, datos: Array }
+            if (result && result.exito && Array.isArray(result.datos)) {
+                // Normalizar campos a la estructura interna del dashboard
+                this.appointments = result.datos.map((c) => ({
+                    id: c.id,
+                    petId: c.pet_id || c.id_mascota || null,
+                    petName: c.nombre_mascota || c.petName || '',
+                    date: c.fecha_cita || c.date || '',
+                    reason: c.motivo || c.reason || '',
+                    status: c.estado || c.status || 'programada'
+                }));
+            } else {
+                // Si la API no devuelve lo esperado, dejar lista vacía para no contar mal
+                this.appointments = [];
+            }
         } catch (error) {
-            console.error('Error cargando citas:', error);
+            console.error('Error cargando citas desde la API:', error);
             this.appointments = [];
         }
     }
@@ -570,7 +590,7 @@ class Dashboard {
         };
 
         try {
-            const response = await fetch('recordatorios.php', {
+            const response = await fetch('api/recordatorios.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -613,7 +633,7 @@ class Dashboard {
         };
 
         try {
-            const response = await fetch('mascotas.php', {
+            const response = await fetch('api/mascotas.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -643,6 +663,7 @@ class Dashboard {
      */
     logout() {
         localStorage.removeItem('currentUser');
+        localStorage.removeItem('alaska_user');
         window.location.href = '../index.html';
     }
 
