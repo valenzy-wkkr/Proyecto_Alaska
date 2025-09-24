@@ -36,10 +36,10 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
           <i class="fas fa-bars"></i>
         </button>
         <ul class="lista-navegacion">
-          <li><a href="/Proyecto_Alaska4/index.html#inicio">Inicio</a></li>
-          <li><a href="/Proyecto_Alaska4/index.html#nosotros">Nosotros</a></li>
+          <li><a href="/Proyecto_Alaska4/index.php#inicio">Inicio</a></li>
+          <li><a href="/Proyecto_Alaska4/index.php#nosotros">Nosotros</a></li>
           <li><a href="/Proyecto_Alaska4/html/contacto.html">Contacto</a></li>
-          <li><a href="/Proyecto_Alaska4/html/citas.html">Citas</a></li>
+          <!-- <li><a href="/Proyecto_Alaska4/html/citas.html">Citas</a></li> -->
           <li><a href="/Proyecto_Alaska4/html/blog.html">Blog</a></li>
           <!-- <li><a href="/index.html#registro" class="boton-nav">Registrarse</a></li> -->
           <!-- <li><a href="/Proyecto_Alaska4/public/dashboard.php" class="inicial-circulo">U</a></li> -->
@@ -87,9 +87,9 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
         <div class="columna-footer enlaces-rapidos">
           <h3>Enlaces Rápidos</h3>
           <ul>
-            <li><a href="/Proyecto_Alaska4/index.html#inicio">Inicio</a></li>
-            <li><a href="/Proyecto_Alaska4/index.html#nosotros">Nosotros</a></li>
-            <li><a href="/Proyecto_Alaska4/index.html#registro">Registro</a></li>
+            <li><a href="/Proyecto_Alaska4/index.php#inicio">Inicio</a></li>
+            <li><a href="/Proyecto_Alaska4/index.php#nosotros">Nosotros</a></li>
+            <li><a href="/Proyecto_Alaska4/index.php#registro">Registro</a></li>
             <li><a href="/Proyecto_Alaska4/html/blog.html">Blog</a></li>
           </ul>
         </div>

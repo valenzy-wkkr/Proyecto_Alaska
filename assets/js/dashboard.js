@@ -422,9 +422,33 @@ class Dashboard {
                         <i class="fas fa-heartbeat"></i>
                         ${healthStatusLabel}
                     </div>
+                    <div class="pet-actions">
+                        <button class="btn-inline btn-edit-pet" data-pet-id="${pet.id}">
+                            <i class="fas fa-pen-to-square"></i> Editar
+                        </button>
+                        <button class="btn-inline btn-delete-pet" data-pet-id="${pet.id}">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </button>
+                    </div>
                 </div>
             `;
         }).join('');
+
+        // Agregar listeners para editar mascota
+        container.querySelectorAll('.btn-edit-pet').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = parseInt(e.currentTarget.getAttribute('data-pet-id'));
+                this.startEditPet(id);
+            });
+        });
+
+        // Agregar listeners para eliminar mascota
+        container.querySelectorAll('.btn-delete-pet').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = parseInt(e.currentTarget.getAttribute('data-pet-id'));
+                this.deletePet(id);
+            });
+        });
     }
 
     /**
@@ -529,10 +553,40 @@ class Dashboard {
     /**
      * Abre el modal de mascota
      */
-    openPetModal() {
+    openPetModal(pet = null) {
         const modal = document.getElementById('petModal');
         if (modal) {
             modal.classList.add('active');
+            const titleEl = modal.querySelector('.modal-header h3');
+            const form = document.getElementById('petForm');
+            if (!form) return;
+            // Campos
+            const idInput = document.getElementById('petId');
+            const nameInput = document.getElementById('petName');
+            const speciesSelect = document.getElementById('petSpecies');
+            const breedInput = document.getElementById('petBreed');
+            const ageInput = document.getElementById('petAge');
+            const weightInput = document.getElementById('petWeight');
+            const healthSelect = document.getElementById('petHealthStatus');
+            const lastCheckupInput = document.getElementById('petLastCheckup');
+
+            if (pet) {
+                if (titleEl) titleEl.textContent = 'Editar Mascota';
+                if (idInput) idInput.value = pet.id;
+                if (nameInput) nameInput.value = pet.name || '';
+                if (speciesSelect) speciesSelect.value = pet.species || '';
+                if (breedInput) breedInput.value = pet.breed || '';
+                if (ageInput) ageInput.value = pet.age ?? '';
+                if (weightInput) weightInput.value = pet.weight ?? '';
+                if (healthSelect) healthSelect.value = pet.healthStatus || 'healthy';
+                if (lastCheckupInput) lastCheckupInput.value = (pet.lastCheckup || '').slice(0, 10);
+            } else {
+                if (titleEl) titleEl.textContent = 'Agregar Mascota';
+                form.reset();
+                if (idInput) idInput.value = '';
+                if (healthSelect) healthSelect.value = 'healthy';
+                if (lastCheckupInput) lastCheckupInput.value = new Date().toISOString().split('T')[0];
+            }
         }
     }
 
@@ -544,6 +598,45 @@ class Dashboard {
         if (modal) {
             modal.classList.remove('active');
             document.getElementById('petForm').reset();
+            const titleEl = modal.querySelector('.modal-header h3');
+            if (titleEl) titleEl.textContent = 'Agregar Mascota';
+        }
+    }
+
+    /**
+     * Inicia edición de una mascota
+     */
+    startEditPet(id) {
+        const pet = this.pets.find(p => p.id === id);
+        if (!pet) return;
+        this.openPetModal(pet);
+    }
+
+    /**
+     * Elimina una mascota tras confirmación
+     */
+    async deletePet(id) {
+        const pet = this.pets.find(p => p.id === id);
+        const name = pet ? pet.name : '';
+        const ok = confirm(`¿Eliminar la mascota ${name ? '"' + name + '" ' : ''}definitivamente?`);
+        if (!ok) return;
+
+        try {
+            const response = await fetch(`api/mascotas.php?id=${encodeURIComponent(id)}`, {
+                method: 'DELETE'
+            });
+            const result = await response.json();
+            if (result && result.success) {
+                this.pets = this.pets.filter(p => p.id !== id);
+                this.renderPetsHealth();
+                this.updateStats();
+                this.showSuccess('Mascota eliminada exitosamente');
+            } else {
+                this.showError('Error al eliminar la mascota');
+            }
+        } catch (err) {
+            console.error('Error eliminando mascota:', err);
+            this.showError('Error al eliminar la mascota');
         }
     }
 
@@ -628,33 +721,55 @@ class Dashboard {
             breed: formData.get('breed'),
             age: parseFloat(formData.get('age')) || 0,
             weight: parseFloat(formData.get('weight')) || 0,
-            healthStatus: 'healthy',
-            lastCheckup: new Date().toISOString().split('T')[0]
+            healthStatus: formData.get('healthStatus') || 'healthy',
+            lastCheckup: (formData.get('lastCheckup') || new Date().toISOString().split('T')[0])
         };
+        const petId = parseInt(formData.get('id')) || null;
 
         try {
-            const response = await fetch('api/mascotas.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(pet)
-            });
-
-            const result = await response.json();
-            
-            if (result.success) {
-                this.pets.push(result.mascota);
-                this.renderPetsHealth();
-                this.updateStats();
-                this.closePetModal();
-                this.showSuccess('Mascota agregada exitosamente');
+            let result;
+            if (petId) {
+                // Actualizar
+                const response = await fetch('api/mascotas.php', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: petId, ...pet })
+                });
+                result = await response.json();
+                if (result && result.success) {
+                    // Actualizar en memoria
+                    const idx = this.pets.findIndex(p => p.id === petId);
+                    if (idx !== -1) {
+                        this.pets[idx] = { id: petId, ...this.pets[idx], ...pet };
+                    }
+                    this.renderPetsHealth();
+                    this.updateStats();
+                    this.closePetModal();
+                    this.showSuccess('Mascota actualizada exitosamente');
+                } else {
+                    this.showError('Error al actualizar la mascota');
+                }
             } else {
-                this.showError('Error al agregar la mascota');
+                // Crear
+                const response = await fetch('api/mascotas.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(pet)
+                });
+                result = await response.json();
+                if (result.success) {
+                    this.pets.push(result.mascota);
+                    this.renderPetsHealth();
+                    this.updateStats();
+                    this.closePetModal();
+                    this.showSuccess('Mascota agregada exitosamente');
+                } else {
+                    this.showError('Error al agregar la mascota');
+                }
             }
         } catch (error) {
             console.error('Error:', error);
-            this.showError('Error al agregar la mascota');
+            this.showError('Error al guardar la mascota');
         }
     }
 

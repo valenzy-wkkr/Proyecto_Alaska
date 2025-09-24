@@ -15,8 +15,15 @@ class MascotasController extends Controller
 
     public function handle(): void
     {
-        // En producción, recuperar desde sesión
-        $usuarioId = 1;
+        // Asegurar sesión y obtener el usuario actual
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        $usuarioId = isset($_SESSION['usuario_id']) ? (int)$_SESSION['usuario_id'] : 0;
+        if ($usuarioId <= 0) {
+            $this->json(['error' => 'No autenticado'], 401);
+            return;
+        }
         $method = $_SERVER['REQUEST_METHOD'];
 
         switch ($method) {
@@ -61,3 +68,4 @@ class MascotasController extends Controller
         }
     }
 }
+

@@ -1,3 +1,9 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+$loggedIn = isset($_SESSION['usuario_id']);
+?>
 <!DOCTYPE html>
 <html lang="es">
   <head>
@@ -39,13 +45,19 @@
                 <i class="fas fa-bars"></i>
             </button>
             <ul class="lista-navegacion">
-                <li><a href="../index.html">Inicio</a></li>
-                <li><a href="../index.html#nosotros">Nosotros</a></li>
-                <li><a href="contacto.html">Contacto</a></li>
-                <li><a href="citas.html">Citas</a></li>
-                <li><a href="blog.html" class="activo">Blog</a></li>
-                <li><a href="../index.html#registro" class="boton-nav">Registrarse</a></li>
+                <li><a href="../index.php">Inicio</a></li>
+                <li><a href="../index.php#nosotros">Nosotros</a></li>
+
+                <li><a href="contacto.php">Contacto</a></li>
+                <!-- <li><a href="citas.html">Citas</a></li> -->
+
+                <li><a href="blog.php" class="activo">Blog</a></li>
+                <?php if (!$loggedIn): ?>
+                <li><a href="../index.php#registro" class="boton-nav">Registrarse</a></li>
+                <?php endif; ?>
+                <?php if ($loggedIn): ?>
                 <li><a href="../public/dashboard.php" class="inicial-circulo">U</a></li>
+                <?php endif; ?>
             </ul>
         </nav>
       </div>
@@ -218,7 +230,7 @@
                             <div class="articulos-populares">
                                 <div class="articulo-popular">
                                     <div class="imagen-popular">
-                                        <img src="../img/popular1.jpg" alt="Artículo popular"> /**✅**/ 
+                                        <img src="../img/popular1.jpg" alt="Artículo popular">
                                     </div>
                                     <div class="info-popular">
                                         <h4><a href="#">Los mejores juguetes para estimular a tu gato</a></h4>
@@ -228,7 +240,7 @@
 
                                 <div class="articulo-popular">
                                     <div class="imagen-popular">
-                                        <img src="../img/popular2.jpg" alt="Artículo popular"> /**✅**/ 
+                                        <img src="../img/popular2.jpg" alt="Artículo popular">
                                     </div>
                                     <div class="info-popular">
                                         <h4><a href="#">Cómo prevenir la ansiedad por separación en perros</a></h4>
@@ -238,7 +250,7 @@
 
                                 <div class="articulo-popular">
                                     <div class="imagen-popular">
-                                        <img src="../img/popular3.jpg" alt="Artículo popular"> /**✅**/ 
+                                        <img src="../img/popular3.jpg" alt="Artículo popular">
                                     </div>
                                     <div class="info-popular">
                                         <h4><a href="#">Beneficios de la esterilización en mascotas</a></h4>
@@ -285,7 +297,7 @@
                 <div class="contenido-cta">
                     <h2>¿Listo para cuidar mejor a tu mascota?</h2>
                     <p>Regístrate ahora y comienza a utilizar todas nuestras herramientas para el cuidado de tu compañero peludo.</p>
-                    <a href="../index.html#registro" class="boton-primario">Registrarse Ahora</a>
+                    <a href="../index.php#registro" class="boton-primario">Registrarse Ahora</a>
                 </div>
             </div>
         </section>
@@ -304,10 +316,10 @@
                 <div class="columna-footer enlaces-rapidos">
                     <h3>Enlaces Rápidos</h3>
                     <ul>
-                        <li><a href="../index.html">Inicio</a></li>
-                        <li><a href="../index.html#nosotros">Nosotros</a></li>
-                        <li><a href="contacto.html">Contacto</a></li>
-                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="../index.php">Inicio</a></li>
+                        <li><a href="../index.php#nosotros">Nosotros</a></li>
+                        <li><a href="contacto.php">Contacto</a></li>
+                        <li><a href="blog.php">Blog</a></li>
                     </ul>
                 </div>
                 <div class="columna-footer redes-sociales">
@@ -325,12 +337,5 @@
             </div>
         </div>
     </footer>
-
-    <!-- Scripts -->
-    <script src="../views/MenuView.js"></script>
-    <script src="../views/ButtonView.js"></script>
-    <script src="../views/FormView.js"></script>
-    <script src="../assets/js/app.js"></script>
-    <script src="../assets/js/blog.js"></script>
   </body>
 </html>

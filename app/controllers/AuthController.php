@@ -20,7 +20,7 @@ class AuthController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             // Redirigir si se intenta acceder directamente por GET desde navegador
-            header('Location: /Proyecto_Alaska4/index.html#registro');
+            header('Location: /Proyecto_Alaska4/index.php#registro');
             return;
         }
 
@@ -49,7 +49,7 @@ class AuthController extends Controller
         if ($payload['nombre'] === '' || $payload['correo'] === '' || $payload['clave'] === '' || $payload['apodo'] === '' || $payload['direccion'] === '') {
             if (!empty($_POST)) {
                 // En un flujo HTML podríamos redirigir con error; por ahora regresar al registro
-                header('Location: /Proyecto_Alaska4/index.html#registro');
+                header('Location: /Proyecto_Alaska4/index.php#registro');
                 return;
             }
             $this->json(['success' => false, 'error' => 'Campos requeridos'], 400);
@@ -165,7 +165,7 @@ class AuthController extends Controller
             $this->json(['success' => true]);
             return;
         }
-        header('Location: /Proyecto_Alaska4/index.html');
+        header('Location: /Proyecto_Alaska4/index.php');
     }
 }
 

@@ -321,6 +321,37 @@
   color: #c62828;
 }
 
+/* Acciones de mascota (Editar/Eliminar) */
+.pet-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.btn-inline {
+  background: transparent;
+  border: none;
+  color: #2e7d32; /* verde */
+  cursor: pointer;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.4rem;
+  text-decoration: none;
+}
+
+.btn-inline i {
+  color: #2e7d32;
+  font-size: 1rem;
+}
+
+.btn-inline:hover {
+  color: #256828;
+  text-decoration: none;
+}
+
 /* Artículos del Blog */
 .blog-articles-container {
   display: flex;

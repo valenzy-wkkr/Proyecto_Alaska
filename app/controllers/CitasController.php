@@ -34,18 +34,28 @@ class CitasController extends Controller
 
     public function handle(): void
     {
+        // Asegurar sesión y obtener usuario
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        $usuarioId = isset($_SESSION['usuario_id']) ? (int)$_SESSION['usuario_id'] : 0;
+        if ($usuarioId <= 0) {
+            $this->respuesta(false, 'No autenticado', null, 401);
+            return;
+        }
+
         $method = $_SERVER['REQUEST_METHOD'];
         try {
             switch ($method) {
                 case 'GET':
                     $filtro = isset($_GET['mascota']) ? (string)$_GET['mascota'] : null;
-                    $citas = $this->model->list($filtro);
+                    $citas = $this->model->listByUser($usuarioId, $filtro);
                     $this->respuesta(true, 'Citas obtenidas exitosamente', $citas);
                     break;
 
                 case 'POST':
                     $data = $this->inputJson();
-                    $id = $this->model->create($data);
+                    $id = $this->model->create($usuarioId, $data);
                     if ($id !== false) {
                         $this->respuesta(true, 'Cita creada exitosamente', ['id' => $id], 201);
                     } else {
@@ -59,7 +69,7 @@ class CitasController extends Controller
                         $this->respuesta(false, 'ID de cita requerido', null, 400);
                         return;
                     }
-                    $ok = $this->model->update((int)$data['id'], $data);
+                    $ok = $this->model->update($usuarioId, (int)$data['id'], $data);
                     if ($ok) {
                         $this->respuesta(true, 'Cita actualizada exitosamente');
                     } else {
@@ -73,7 +83,7 @@ class CitasController extends Controller
                         $this->respuesta(false, 'ID de cita requerido', null, 400);
                         return;
                     }
-                    $ok = $this->model->delete($id);
+                    $ok = $this->model->delete($usuarioId, $id);
                     if ($ok) {
                         $this->respuesta(true, 'Cita eliminada exitosamente');
                     } else {
@@ -89,3 +99,4 @@ class CitasController extends Controller
         }
     }
 }
+

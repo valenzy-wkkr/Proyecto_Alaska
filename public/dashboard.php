@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Panel de Control - Alaska</title>
     <link rel="stylesheet" href="/Proyecto_Alaska4/assets/css/style.css" />
-    <link rel="stylesheet" href="/Proyecto_Alaska4/assets/css/dashboard.css" />
+    <link rel="stylesheet" href="/Proyecto_Alaska4/assets/css/dashboard.css?v=20250922-1" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -39,10 +39,11 @@
                 <i class="fas fa-bars"></i>
             </button>
             <ul class="lista-navegacion">
-                <li><a href="/Proyecto_Alaska4/index.html">Inicio</a></li>
+                <li><a href="/Proyecto_Alaska4/index.php">Inicio</a></li>
+                <li><a href="/Proyecto_Alaska4/html/contacto.php">Contacto</a></li>
                 <li><a href="/Proyecto_Alaska4/html/citas.html">Citas</a></li>
-                <li><a href="/Proyecto_Alaska4/html/blog.html">Blog</a></li>
-                <li><a href="/Proyecto_Alaska4/html/contacto.html">Contacto</a></li>
+                <li><a href="/Proyecto_Alaska4/html/blog.php">Blog</a></li>
+                <!-- <li><a href="/Proyecto_Alaska4/html/contacto.html">Contacto</a></li> -->
                 <li><a href="/Proyecto_Alaska4/public/api/auth/logout.php" class="boton-nav" id="btnCerrarSesion">Cerrar Sesión</a></li>
             </ul>
         </nav>
@@ -54,7 +55,7 @@
             <!-- Header del Dashboard -->
             <div class="dashboard-header">
                 <div class="dashboard-welcome">
-                  <h1>¡Bienvenido de vuelta!</h1>
+                  <h1>¡Bienvenido!</h1>
                   <p id="userName"><?php echo htmlspecialchars($nombreUsuario, ENT_QUOTES, 'UTF-8'); ?></p>
                 </div>
                 <div class="dashboard-stats">
@@ -123,7 +124,7 @@
                     <section class="dashboard-section">
                         <div class="section-header">
                             <h2><i class="fas fa-newspaper"></i> Últimos Artículos</h2>
-                            <a href="/Proyecto_Alaska4/html/blog.html" class="btn-view-all">Ver Todos</a>
+                            <a href="/Proyecto_Alaska4/html/blog.php" class="btn-view-all">Ver Todos</a>
                         </div>
                         <div class="blog-articles-container" id="blogArticlesContainer">
                             <div class="empty-state">
@@ -205,6 +206,7 @@
                 </button>
             </div>
             <form id="petForm">
+                <input type="hidden" id="petId" name="id">
                 <div class="form-group">
                     <label for="petName">Nombre</label>
                     <input type="text" id="petName" name="name" required>
@@ -234,6 +236,20 @@
                         <input type="number" id="petWeight" name="weight" min="0" step="0.1">
                     </div>
                 </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="petHealthStatus">Estado de salud</label>
+                        <select id="petHealthStatus" name="healthStatus">
+                            <option value="healthy">Saludable</option>
+                            <option value="attention">Necesita atención</option>
+                            <option value="warning">Requiere revisión</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="petLastCheckup">Última revisión</label>
+                        <input type="date" id="petLastCheckup" name="lastCheckup">
+                    </div>
+                </div>
                 <div class="form-actions">
                     <button type="button" class="btn-secondary" id="cancelPet">Cancelar</button>
                     <button type="submit" class="btn-primary">Guardar</button>
@@ -243,7 +259,7 @@
     </div>
 
     <!-- Scripts -->
-    <script src="/Proyecto_Alaska4/assets/js/dashboard.js"></script>
+    <script src="/Proyecto_Alaska4/assets/js/dashboard.js?v=20250922-1"></script>
     <script>
       (function () {
         try {

@@ -13,28 +13,29 @@ class Appointment
         $this->db = Database::getConnection();
     }
 
-    public function create(array $data): int|false
+    public function create(int $usuarioId, array $data): int|false
     {
-        $sql = "INSERT INTO citas (tipo_mascota, nombre_mascota, fecha_cita, motivo, notas, estado, fecha_creacion)
-                VALUES (?, ?, ?, ?, ?, 'programada', NOW())";
+        $sql = "INSERT INTO citas (usuario_id, tipo_mascota, nombre_mascota, fecha_cita, motivo, notas, estado, fecha_creacion)
+                VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
         $stmt = $this->db->prepare($sql);
         $tipoMascota = $data['petId'] ?? '';
         $nombreMascota = $data['petName'] ?? '';
         $fechaCita = $data['appointmentDate'] ?? '';
         $motivo = $data['reason'] ?? '';
         $notas = $data['notes'] ?? '';
-        $stmt->bind_param('sssss', $tipoMascota, $nombreMascota, $fechaCita, $motivo, $notas);
+        $estado = $data['status'] ?? 'programada';
+        $stmt->bind_param('issssss', $usuarioId, $tipoMascota, $nombreMascota, $fechaCita, $motivo, $notas, $estado);
         if ($stmt->execute()) {
             return (int)$this->db->insert_id;
         }
         return false;
     }
 
-    public function list(?string $filtroMascota = null): array
+    public function listByUser(int $usuarioId, ?string $filtroMascota = null): array
     {
-        $sql = "SELECT * FROM citas WHERE 1=1";
-        $params = [];
-        $types = '';
+        $sql = "SELECT * FROM citas WHERE usuario_id = ?";
+        $params = [$usuarioId];
+        $types = 'i';
         if (!empty($filtroMascota) && $filtroMascota !== 'todas') {
             $sql .= " AND tipo_mascota = ?";
             $params[] = $filtroMascota;
@@ -42,9 +43,7 @@ class Appointment
         }
         $sql .= " ORDER BY fecha_cita DESC";
         $stmt = $this->db->prepare($sql);
-        if ($types !== '') {
-            $stmt->bind_param($types, ...$params);
-        }
+        $stmt->bind_param($types, ...$params);
         $stmt->execute();
         $result = $stmt->get_result();
         $rows = [];
@@ -66,7 +65,7 @@ class Appointment
         return $rows;
     }
 
-    public function update(int $id, array $data): bool
+    public function update(int $usuarioId, int $id, array $data): bool
     {
         $fields = [];
         $values = [];
@@ -95,19 +94,21 @@ class Appointment
             return false;
         }
 
-        $sql = "UPDATE citas SET " . implode(', ', $fields) . " WHERE id = ?";
+        $sql = "UPDATE citas SET " . implode(', ', $fields) . " WHERE id = ? AND usuario_id = ?";
         $stmt = $this->db->prepare($sql);
-        $types .= 'i';
+        $types .= 'ii';
         $values[] = $id;
+        $values[] = $usuarioId;
         $stmt->bind_param($types, ...$values);
         return $stmt->execute();
     }
 
-    public function delete(int $id): bool
+    public function delete(int $usuarioId, int $id): bool
     {
-        $sql = "DELETE FROM citas WHERE id = ?";
+        $sql = "DELETE FROM citas WHERE id = ? AND usuario_id = ?";
         $stmt = $this->db->prepare($sql);
-        $stmt->bind_param('i', $id);
+        $stmt->bind_param('ii', $id, $usuarioId);
         return $stmt->execute();
     }
 }
+
