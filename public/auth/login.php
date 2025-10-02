@@ -38,9 +38,9 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
         <ul class="lista-navegacion">
           <li><a href="/Proyecto_Alaska4/index.php#inicio">Inicio</a></li>
           <li><a href="/Proyecto_Alaska4/index.php#nosotros">Nosotros</a></li>
-          <li><a href="/Proyecto_Alaska4/html/contacto.html">Contacto</a></li>
+          <li><a href="/Proyecto_Alaska4/html/contacto.php">Contacto</a></li>
           <!-- <li><a href="/Proyecto_Alaska4/html/citas.html">Citas</a></li> -->
-          <li><a href="/Proyecto_Alaska4/html/blog.html">Blog</a></li>
+          <li><a href="/Proyecto_Alaska4/html/blog.php">Blog</a></li>
           <!-- <li><a href="/index.html#registro" class="boton-nav">Registrarse</a></li> -->
           <!-- <li><a href="/Proyecto_Alaska4/public/dashboard.php" class="inicial-circulo">U</a></li> -->
         </ul>
@@ -71,7 +71,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
         </div>
         <button type="submit" class="btn-login">Iniciar Sesión</button>
       </form>
-      <a href="#">¿Olvidaste tu contraseña?</a>
+      <a href="/Proyecto_Alaska4/public/auth/forgot.php">¿Olvidaste tu contraseña?</a>
     </div>
   </main>
 
@@ -79,7 +79,6 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
     <div class="contenedor">
       <div class="contenido-footer">
         <div class="columna-footer info-contacto">
-          <h3>Contacto</h3>
           <p><i class="fas fa-map-marker-alt"></i> Calle Principal 123, Ciudad</p>
           <p><i class="fas fa-phone"></i> +123 456 7890</p>
           <p><i class="fas fa-envelope"></i> info@alaska-mascotas.com</p>

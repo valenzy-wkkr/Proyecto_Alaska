@@ -20,6 +20,10 @@ class RecordatoriosController extends Controller
         $method = $_SERVER['REQUEST_METHOD'];
 
         switch ($method) {
+            case 'GET':
+                $list = $this->model->listByUser($usuarioId);
+                $this->json(['success' => true, 'datos' => $list], 200);
+                break;
             case 'POST':
                 $data = $this->inputJson();
                 $created = $this->model->create($usuarioId, $data);
@@ -27,6 +31,38 @@ class RecordatoriosController extends Controller
                     $this->json(['success' => true, 'recordatorio' => $created], 201);
                 } else {
                     $this->json(['success' => false, 'error' => 'Error al crear el recordatorio'], 400);
+                }
+                break;
+            case 'PUT':
+                $data = $this->inputJson();
+                $id = isset($data['id']) ? (int)$data['id'] : 0;
+                if ($id <= 0) {
+                    $this->json(['success' => false, 'error' => 'ID inválido'], 400);
+                    return;
+                }
+                $updated = $this->model->update($usuarioId, $id, $data);
+                if ($updated) {
+                    $this->json(['success' => true]);
+                } else {
+                    $this->json(['success' => false, 'error' => 'No se pudo actualizar'], 400);
+                }
+                break;
+            case 'DELETE':
+                $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+                if ($id <= 0) {
+                    // Intentar leer cuerpo JSON como fallback
+                    $data = $this->inputJson();
+                    $id = isset($data['id']) ? (int)$data['id'] : 0;
+                }
+                if ($id <= 0) {
+                    $this->json(['success' => false, 'error' => 'ID inválido'], 400);
+                    return;
+                }
+                $deleted = $this->model->delete($usuarioId, $id);
+                if ($deleted) {
+                    $this->json(['success' => true]);
+                } else {
+                    $this->json(['success' => false, 'error' => 'No se pudo eliminar'], 400);
                 }
                 break;
             default:

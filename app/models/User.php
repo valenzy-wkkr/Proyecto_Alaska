@@ -55,4 +55,12 @@ class User
         $stmt->execute();
         return $this->db->insert_id;
     }
+
+    public function updatePassword(int $userId, string $hashedPassword): bool
+    {
+        $sql = "UPDATE usuarios SET clave = ? WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param('si', $hashedPassword, $userId);
+        return $stmt->execute();
+    }
 }

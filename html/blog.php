@@ -46,17 +46,21 @@ $loggedIn = isset($_SESSION['usuario_id']);
             </button>
             <ul class="lista-navegacion">
                 <li><a href="../index.php">Inicio</a></li>
+                <?php if (!$loggedIn): ?>
                 <li><a href="../index.php#nosotros">Nosotros</a></li>
+                <?php endif; ?>
 
                 <li><a href="contacto.php">Contacto</a></li>
-                <!-- <li><a href="citas.html">Citas</a></li> -->
+                <?php if ($loggedIn): ?>
+                <li><a href="citas.html">Citas</a></li>
+                <?php endif; ?>
 
                 <li><a href="blog.php" class="activo">Blog</a></li>
                 <?php if (!$loggedIn): ?>
                 <li><a href="../index.php#registro" class="boton-nav">Registrarse</a></li>
                 <?php endif; ?>
                 <?php if ($loggedIn): ?>
-                <li><a href="../public/dashboard.php" class="inicial-circulo">U</a></li>
+                <!-- <li><a href="../public/dashboard.php" class="inicial-circulo">U</a></li> -->
                 <?php endif; ?>
             </ul>
         </nav>
@@ -91,7 +95,7 @@ $loggedIn = isset($_SESSION['usuario_id']);
                                 </div>
                                 <h2>10 Señales de que tu mascota necesita atención veterinaria urgente</h2>
                                 <p>Conocer las señales de alarma puede marcar la diferencia entre la vida y la muerte de tu mascota. En este artículo, te explicamos los síntomas que nunca debes ignorar y cuándo debes acudir inmediatamente al veterinario.</p>
-                                <a href="blog-detalle.html" class="boton-secundario" style="color: #000">Leer más</a>
+                                <a href="../blog/destacado/destacado.html" class="boton-secundario" style="color: #000">Leer más</a>
                             </div>
                         </article>
 
@@ -108,7 +112,7 @@ $loggedIn = isset($_SESSION['usuario_id']);
                                     </div>
                                     <h3>Guía completa de alimentación para perros según su edad</h3>
                                     <p>La alimentación adecuada es fundamental para la salud de tu perro. Descubre qué tipo de alimento necesita tu mascota según su etapa de vida.</p>
-                                    <a href="blog-detalle.html" class="enlace-articulo">Leer más <i class="fas fa-arrow-right"></i></a>
+                                    <a href="../blog/alimentacion/food.html" class="enlace-articulo">Leer más <i class="fas fa-arrow-right"></i></a>
                                 </div>
                             </article>
 
@@ -123,7 +127,7 @@ $loggedIn = isset($_SESSION['usuario_id']);
                                     </div>
                                     <h3>5 Técnicas efectivas para entrenar a tu cachorro</h3>
                                     <p>El entrenamiento temprano es clave para tener un perro bien educado. Aprende estas técnicas simples pero efectivas para entrenar a tu cachorro.</p>
-                                    <a href="blog-detalle.html" class="enlace-articulo">Leer más <i class="fas fa-arrow-right"></i></a>
+                                    <a href="../blog/entrenamiento/training.html" class="enlace-articulo">Leer más <i class="fas fa-arrow-right"></i></a>
                                 </div>
                             </article>
 
@@ -138,7 +142,7 @@ $loggedIn = isset($_SESSION['usuario_id']);
                                     </div>
                                     <h3>Cómo entender el lenguaje corporal de tu gato</h3>
                                     <p>Los gatos se comunican principalmente a través de su lenguaje corporal. Aprende a interpretar las señales que tu felino te está enviando.</p>
-                                    <a href="blog-detalle.html" class="enlace-articulo">Leer más <i class="fas fa-arrow-right"></i></a>
+                                    <a href="../blog/lenguajeGatos/language.html" class="enlace-articulo">Leer más <i class="fas fa-arrow-right"></i></a>
                                 </div>
                             </article>
 
@@ -153,7 +157,7 @@ $loggedIn = isset($_SESSION['usuario_id']);
                                     </div>
                                     <h3>Cuidados básicos para mascotas exóticas</h3>
                                     <p>Las mascotas exóticas requieren cuidados especiales. Descubre lo que necesitas saber si tienes o estás pensando en adoptar una mascota no convencional.</p>
-                                    <a href="blog-detalle.html" class="enlace-articulo">Leer más <i class="fas fa-arrow-right"></i></a>
+                                    <a href="../blog/exotic_pets/care.html" class="enlace-articulo">Leer más <i class="fas fa-arrow-right"></i></a>
                                 </div>
                             </article>
 
@@ -168,7 +172,7 @@ $loggedIn = isset($_SESSION['usuario_id']);
                                     </div>
                                     <h3>Calendario de vacunación para perros y gatos</h3>
                                     <p>Mantener al día las vacunas de tu mascota es esencial para su salud. Conoce el calendario de vacunación recomendado para perros y gatos.</p>
-                                    <a href="blog-detalle.html" class="enlace-articulo">Leer más <i class="fas fa-arrow-right"></i></a>
+                                    <a href="../blog/vaccination/vaccination.html" class="enlace-articulo">Leer más <i class="fas fa-arrow-right"></i></a>
                                 </div>
                             </article>
 
@@ -183,20 +187,20 @@ $loggedIn = isset($_SESSION['usuario_id']);
                                     </div>
                                     <h3>Guía para adoptar una mascota responsablemente</h3>
                                     <p>Adoptar una mascota es una decisión importante. Te ofrecemos una guía completa para que la adopción sea responsable y exitosa.</p>
-                                    <a href="blog-detalle.html" class="enlace-articulo">Leer más <i class="fas fa-arrow-right"></i></a>
+                                    <a href="../blog/adopcion/adopcion.html" class="enlace-articulo">Leer más <i class="fas fa-arrow-right"></i></a>
                                 </div>
                             </article>
                         </div>
 
                         <!-- Paginación -->
-                        <div class="paginacion">
+                        <!-- <div class="paginacion">
                             <a href="#" class="pagina activa">1</a>
                             <a href="#" class="pagina">2</a>
                             <a href="#" class="pagina">3</a>
                             <a href="#" class="pagina siguiente">
                                 <i class="fas fa-chevron-right"></i>
                             </a>
-                        </div>
+                        </div> -->
                     </div>
 
                     <!-- Barra lateral -->
@@ -277,22 +281,29 @@ $loggedIn = isset($_SESSION['usuario_id']);
                             </div>
                         </div>
 
-                        <!-- Suscripción -->
-                        <div class="widget widget-suscripcion">
-                            <h3>Suscríbete</h3>
-                            <p>Recibe nuestros últimos artículos y consejos directamente en tu correo.</p>
-                            <form class="formulario-suscripcion">
-                                <input type="email" placeholder="Tu correo electrónico" required>
-                                <button type="submit" class="boton-primario boton-completo">Suscribirse</button>
-                            </form>
-                        </div>
+                        <?php if (isset($_SESSION['usuario_id'])) : ?>
+                            <!-- Widget del Dashboard -->
+                            <div class="widget widget-dashboard">
+                                <h3>Mi Mascota</h3>
+                                <!-- <p>Agenda citas para tus mascotas.</p> -->
+                                 <p>Porque su bienestar es primero: agenda su cita ahora.</p>
+                                <a href="../html/citas.html" class="boton-primario boton-completo" role="button">Ir a Citas</a>
+                            </div>
+                        <?php else : ?>
+                            <!-- Widget de Registro -->
+                            <div class="widget widget-registro">
+                                <h3>Gestiona la Salud de tu Mascota</h3>
+                                <p>Crea una cuenta para llevar un registro de las vacunas, citas y recordatorios de tu mascota.</p>
+                                <a href="../index.php#registro" class="boton-primario boton-completo" role="button">Regístrate Gratis</a>
+                            </div>
+                        <?php endif; ?>
                     </aside>
                 </div>
             </div>
         </section>
 
         <!-- Llamado a la acción -->
-        <section class="seccion-cta">
+        <!-- <section class="seccion-cta">
             <div class="contenedor">
                 <div class="contenido-cta">
                     <h2>¿Listo para cuidar mejor a tu mascota?</h2>
@@ -300,7 +311,7 @@ $loggedIn = isset($_SESSION['usuario_id']);
                     <a href="../index.php#registro" class="boton-primario">Registrarse Ahora</a>
                 </div>
             </div>
-        </section>
+        </section> -->
     </main>
 
     <!-- Pie de página -->
@@ -317,8 +328,13 @@ $loggedIn = isset($_SESSION['usuario_id']);
                     <h3>Enlaces Rápidos</h3>
                     <ul>
                         <li><a href="../index.php">Inicio</a></li>
+                        <?php if (!$loggedIn): ?>
                         <li><a href="../index.php#nosotros">Nosotros</a></li>
+                        <?php endif; ?>
                         <li><a href="contacto.php">Contacto</a></li>
+                        <?php if ($loggedIn): ?>
+                        <li><a href="citas.html">Citas</a></li>
+                        <?php endif; ?>
                         <li><a href="blog.php">Blog</a></li>
                     </ul>
                 </div>

@@ -3,6 +3,11 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 $loggedIn = isset($_SESSION['usuario_id']);
+// Si el usuario ya inició sesión, redirigir directamente al dashboard
+if ($loggedIn) {
+    header('Location: /Proyecto_Alaska4/public/dashboard.php');
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">

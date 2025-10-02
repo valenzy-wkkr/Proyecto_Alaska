@@ -163,43 +163,65 @@ class Dashboard {
      */
     async loadReminders() {
         console.log('Cargando recordatorios...');
-        // Datos de ejemplo para debug
-        this.reminders = [
-            {
-                id: 1,
-                title: 'Vacuna anual de Luna',
-                date: '2024-03-15T10:00:00',
-                type: 'vacuna',
-                petId: 1,
-                petName: 'Luna',
-                notes: 'Recordatorio para vacuna anual',
-                urgent: false,
-                completed: false
-            },
-            {
-                id: 2,
-                title: 'Revisión dental de Mittens',
-                date: '2024-03-20T14:30:00',
-                type: 'cita',
-                petId: 2,
-                petName: 'Mittens',
-                notes: 'Revisión dental y limpieza',
-                urgent: false,
-                completed: false
-            },
-            {
-                id: 3,
-                title: 'Medicamento para Max',
-                date: '2024-03-10T08:00:00',
-                type: 'medicamento',
-                petId: 3,
-                petName: 'Max',
-                notes: 'Administrar medicamento para la artritis',
-                urgent: true,
-                completed: false
+        // 1) Intentar cargar desde la API
+        try {
+            const response = await fetch('api/recordatorios.php');
+            if (response.ok) {
+                const result = await response.json();
+                // Posibles formatos: {success:true, datos:[...] } o arreglo directo
+                const list = Array.isArray(result?.datos) ? result.datos : (Array.isArray(result) ? result : []);
+                this.reminders = list.map(r => ({
+                    id: r.id,
+                    title: r.title || r.titulo || '',
+                    date: r.date || r.fecha || r.fecha_cita || '',
+                    type: r.type || r.tipo || 'otro',
+                    petId: r.petId || r.id_mascota || r.pet_id || null,
+                    petName: r.petName || r.nombre_mascota || '',
+                    notes: r.notes || r.notas || '',
+                    urgent: !!r.urgent,
+                    completed: !!r.completed
+                }));
+                this.saveRemindersToStorage(); // sincronizar localStorage
+                console.log('Recordatorios desde API:', this.reminders);
+                return;
             }
-        ];
-        console.log('Recordatorios cargados:', this.reminders);
+        } catch (err) {
+            console.warn('No se pudo cargar recordatorios desde API, usando almacenamiento local:', err);
+        }
+
+        // 2) Fallback a localStorage
+        const stored = this.loadRemindersFromStorage();
+        if (stored.length > 0) {
+            this.reminders = stored;
+            console.log('Recordatorios desde localStorage:', this.reminders);
+            return;
+        }
+
+        // 3) Fallback final: arreglo vacío
+        this.reminders = [];
+        console.log('Sin recordatorios previos.');
+    }
+
+    /**
+     * Carga recordatorios desde localStorage
+     */
+    loadRemindersFromStorage() {
+        try {
+            const raw = localStorage.getItem('alaska_reminders');
+            const parsed = raw ? JSON.parse(raw) : [];
+            return Array.isArray(parsed) ? parsed : [];
+        } catch {
+            return [];
+        }
+    }
+
+    /**
+     * Guarda recordatorios en localStorage
+     */
+    saveRemindersToStorage() {
+        try {
+            localStorage.setItem('alaska_reminders', JSON.stringify(this.reminders));
+        } catch {}
     }
 
     /**
@@ -367,9 +389,66 @@ class Dashboard {
                     <div class="reminder-type">${this.getReminderTypeLabel(reminder.type)}</div>
                     <div class="reminder-pet">Mascota: ${reminder.petName}</div>
                     ${reminder.notes ? `<div class="reminder-notes">${reminder.notes}</div>` : ''}
+                    <div class="reminder-actions">
+                        <button class="btn-inline btn-edit-reminder" data-reminder-id="${reminder.id}">
+                            <i class="fas fa-pen-to-square"></i> Editar
+                        </button>
+                        <button class="btn-inline btn-delete-reminder" data-reminder-id="${reminder.id}">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </button>
+                    </div>
                 </div>
             `;
         }).join('');
+
+        // Listeners de acciones
+        container.querySelectorAll('.btn-edit-reminder').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = parseInt(e.currentTarget.getAttribute('data-reminder-id'));
+                this.startEditReminder(id);
+            });
+        });
+        container.querySelectorAll('.btn-delete-reminder').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = parseInt(e.currentTarget.getAttribute('data-reminder-id'));
+                this.deleteReminder(id);
+            });
+        });
+    }
+
+    /**
+     * Inicia edición de un recordatorio
+     */
+    startEditReminder(id) {
+        const reminder = this.reminders.find(r => r.id === id);
+        if (!reminder) return;
+        this.openReminderModal(reminder);
+    }
+
+    /**
+     * Elimina un recordatorio
+     */
+    async deleteReminder(id) {
+        const rem = this.reminders.find(r => r.id === id);
+        const ok = confirm(`¿Eliminar el recordatorio ${rem ? '"' + rem.title + '" ' : ''}definitivamente?`);
+        if (!ok) return;
+
+        try {
+            const response = await fetch(`api/recordatorios.php?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+            const result = await response.json();
+            if (result && result.success) {
+                this.reminders = this.reminders.filter(r => r.id !== id);
+                this.renderReminders();
+                this.updateStats();
+                this.saveRemindersToStorage();
+                this.showSuccess('Recordatorio eliminado exitosamente');
+            } else {
+                this.showError('Error al eliminar el recordatorio');
+            }
+        } catch (err) {
+            console.error('Error eliminando recordatorio:', err);
+            this.showError('Error al eliminar el recordatorio');
+        }
     }
 
     /**
@@ -471,7 +550,7 @@ class Dashboard {
 
         container.innerHTML = this.blogArticles.slice(0, 3).map(article => {
             return `
-                <div class="blog-article" onclick="window.location.href='blog.html#article-${article.id}'">
+                <div class="blog-article" onclick="window.location.href='${this.getArticleUrl(article)}'">
                     <h4 class="blog-article-title">${article.title}</h4>
                     <p class="blog-article-excerpt">${article.excerpt}</p>
                     <div class="blog-article-meta">
@@ -531,11 +610,33 @@ class Dashboard {
     /**
      * Abre el modal de recordatorio
      */
-    openReminderModal() {
+    openReminderModal(reminder = null) {
         const modal = document.getElementById('reminderModal');
-        if (modal) {
-            modal.classList.add('active');
-            this.populatePetSelect('reminderPet');
+        if (!modal) return;
+        modal.classList.add('active');
+        this.populatePetSelect('reminderPet');
+
+        const titleEl = modal.querySelector('.modal-header h3');
+        const idInput = document.getElementById('reminderId');
+        const titleInput = document.getElementById('reminderTitle');
+        const dateInput = document.getElementById('reminderDate');
+        const typeSelect = document.getElementById('reminderType');
+        const petSelect = document.getElementById('reminderPet');
+        const notesInput = document.getElementById('reminderNotes');
+
+        if (reminder) {
+            if (titleEl) titleEl.textContent = 'Editar Recordatorio';
+            if (idInput) idInput.value = reminder.id;
+            if (titleInput) titleInput.value = reminder.title || '';
+            if (dateInput) dateInput.value = (reminder.date || '').slice(0, 16);
+            if (typeSelect) typeSelect.value = reminder.type || '';
+            if (petSelect) petSelect.value = String(reminder.petId || '');
+            if (notesInput) notesInput.value = reminder.notes || '';
+        } else {
+            if (titleEl) titleEl.textContent = 'Agregar Recordatorio';
+            const form = document.getElementById('reminderForm');
+            form && form.reset();
+            if (idInput) idInput.value = '';
         }
     }
 
@@ -544,10 +645,14 @@ class Dashboard {
      */
     closeReminderModal() {
         const modal = document.getElementById('reminderModal');
-        if (modal) {
-            modal.classList.remove('active');
-            document.getElementById('reminderForm').reset();
-        }
+        if (!modal) return;
+        modal.classList.remove('active');
+        const form = document.getElementById('reminderForm');
+        form && form.reset();
+        const idInput = document.getElementById('reminderId');
+        if (idInput) idInput.value = '';
+        const titleEl = modal.querySelector('.modal-header h3');
+        if (titleEl) titleEl.textContent = 'Agregar Recordatorio';
     }
 
     /**
@@ -681,30 +786,75 @@ class Dashboard {
             notes: formData.get('notes'),
             urgent: false
         };
+        const reminderId = parseInt(formData.get('id')) || null;
 
         try {
-            const response = await fetch('api/recordatorios.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(reminder)
-            });
-
-            const result = await response.json();
-            
-            if (result.success) {
-                this.reminders.push(result.recordatorio);
-                this.renderReminders();
-                this.updateStats();
-                this.closeReminderModal();
-                this.showSuccess('Recordatorio agregado exitosamente');
+            let result;
+            if (reminderId) {
+                // Actualizar
+                const response = await fetch('api/recordatorios.php', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: reminderId, ...reminder })
+                });
+                result = await response.json();
+                if (result && result.success) {
+                    const idx = this.reminders.findIndex(r => r.id === reminderId);
+                    if (idx !== -1) {
+                        this.reminders[idx] = { id: reminderId, ...this.reminders[idx], ...reminder };
+                    }
+                    this.renderReminders();
+                    this.updateStats();
+                    this.saveRemindersToStorage();
+                    this.closeReminderModal();
+                    this.showSuccess('Recordatorio actualizado exitosamente');
+                } else {
+                    this.showError('Error al actualizar el recordatorio');
+                }
             } else {
-                this.showError('Error al agregar el recordatorio');
+                // Crear
+                const response = await fetch('api/recordatorios.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(reminder)
+                });
+                result = await response.json();
+                if (result.success) {
+                    // Asegurar ID. Si API no retorna, generamos uno local.
+                    const created = result.recordatorio || reminder;
+                    if (!created.id) {
+                        created.id = Date.now();
+                    }
+                    this.reminders.push(created);
+                    this.renderReminders();
+                    this.updateStats();
+                    this.saveRemindersToStorage();
+                    this.closeReminderModal();
+                    this.showSuccess('Recordatorio agregado exitosamente');
+                } else {
+                    this.showError('Error al agregar el recordatorio');
+                }
             }
         } catch (error) {
             console.error('Error:', error);
-            this.showError('Error al agregar el recordatorio');
+            // Fallback offline: guardar localmente si falló la API pero el formulario es válido
+            if (reminderId) {
+                const idx = this.reminders.findIndex(r => r.id === reminderId);
+                if (idx !== -1) this.reminders[idx] = { id: reminderId, ...this.reminders[idx], ...reminder };
+                this.renderReminders();
+                this.updateStats();
+                this.saveRemindersToStorage();
+                this.closeReminderModal();
+                this.showSuccess('Recordatorio actualizado localmente');
+            } else {
+                const created = { id: Date.now(), ...reminder };
+                this.reminders.push(created);
+                this.renderReminders();
+                this.updateStats();
+                this.saveRemindersToStorage();
+                this.closeReminderModal();
+                this.showSuccess('Recordatorio guardado localmente');
+            }
         }
     }
 
@@ -793,6 +943,36 @@ class Dashboard {
             hour: '2-digit',
             minute: '2-digit'
         }).format(date);
+    }
+
+    /**
+     * Obtiene la URL destino del artículo dentro de latest_articles/
+     * Mapea por id y también por palabras clave del título.
+     */
+    getArticleUrl(article) {
+        // Soporte opcional por slug si el JSON lo trae
+        if (article && article.slug) {
+            return `/Proyecto_Alaska4/latest_articles/${article.slug}/${article.slug}.html`;
+        }
+
+        const id = article?.id;
+        const title = (article?.title || '').toLowerCase();
+
+        // id 1 o títulos que contengan "dental"
+        if (id === 1 || title.includes('dental')) {
+            return '/Proyecto_Alaska4/latest_articles/salud_Dental/dental.html';
+        }
+        // id 2 o títulos que contengan "senior"
+        if (id === 2 || title.includes('senior')) {
+            return '/Proyecto_Alaska4/latest_articles/senior/senior.html';
+        }
+        // id 3 o títulos que contengan "gatos", "mentales" o "mental"
+        if (id === 3 || title.includes('gatos') || title.includes('mentales') || title.includes('mental')) {
+            return '/Proyecto_Alaska4/latest_articles/mental_exercises/mental.html';
+        }
+
+        // Fallback: listado del blog
+        return '/Proyecto_Alaska4/html/blog.php';
     }
 
     /**

@@ -159,6 +159,7 @@
                 </button>
             </div>
             <form id="reminderForm">
+                <input type="hidden" id="reminderId" name="id">
                 <div class="form-group">
                     <label for="reminderTitle">Título</label>
                     <input type="text" id="reminderTitle" name="title" required>
@@ -259,7 +260,7 @@
     </div>
 
     <!-- Scripts -->
-    <script src="/Proyecto_Alaska4/assets/js/dashboard.js?v=20250922-1"></script>
+    <script src="/Proyecto_Alaska4/assets/js/dashboard.js?v=20251002-1"></script>
     <script>
       (function () {
         try {

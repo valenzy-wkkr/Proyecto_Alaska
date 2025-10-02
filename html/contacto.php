@@ -31,14 +31,19 @@ $loggedIn = isset($_SESSION['usuario_id']);
         <button class="boton-menu-movil" aria-label="Abrir menú"><i class="fas fa-bars"></i></button>
         <ul class="lista-navegacion">
           <li><a href="../index.php">Inicio</a></li>
+          <?php if (!$loggedIn): ?>
           <li><a href="../index.php#nosotros">Nosotros</a></li>
+          <?php endif; ?>
           <li><a href="contacto.php" class="activo">Contacto</a></li>
+          <?php if ($loggedIn): ?>
+          <li><a href="../html/citas.html">Citas</a></li>
+          <?php endif; ?>
           <li><a href="blog.php">Blog</a></li>
           <?php if (!$loggedIn): ?>
             <li><a href="../index.php#registro" class="boton-nav">Registrarse</a></li>
           <?php endif; ?>
           <?php if ($loggedIn): ?>
-            <li><a href="../public/dashboard.php" class="inicial-circulo">U</a></li>
+            <!-- <li><a href="../public/dashboard.php" class="inicial-circulo">U</a></li> -->
           <?php endif; ?>
         </ul>
       </nav>
@@ -78,12 +83,16 @@ $loggedIn = isset($_SESSION['usuario_id']);
           <div class="formulario-contacto">
             <h2>Envíanos un Mensaje</h2>
             <div id="mensaje-estado" class="alerta" style="display:none; margin-bottom: 1rem;"></div>
-            <form action="../public/api/contacto.php" method="POST" id="formulario-contacto">
-              <div class="grupo-formulario"><label for="nombre-contacto">Nombre Completo</label><div class="entrada-con-icono"><i class="fas fa-user"></i><input type="text" id="nombre-contacto" name="nombre-contacto" placeholder="Tu nombre completo" required></div></div>
-              <div class="grupo-formulario"><label for="email-contacto">Correo Electrónico</label><div class="entrada-con-icono"><i class="fas fa-envelope"></i><input type="email" id="email-contacto" name="email-contacto" placeholder="ejemplo@correo.com" required></div></div>
-              <div class="grupo-formulario"><label for="telefono-contacto">Teléfono</label><div class="entrada-con-icono"><i class="fas fa-phone"></i><input type="tel" id="telefono-contacto" name="telefono-contacto" placeholder="Tu número de teléfono"></div></div>
-              <div class="grupo-formulario"><label for="asunto-contacto">Asunto</label><div class="entrada-con-icono"><i class="fas fa-tag"></i><input type="text" id="asunto-contacto" name="asunto-contacto" placeholder="Asunto de tu mensaje" required></div></div>
-              <div class="grupo-formulario"><label for="mensaje-contacto">Mensaje</label><textarea id="mensaje-contacto" name="mensaje-contacto" rows="5" placeholder="Escribe tu mensaje aquí..." required></textarea></div>
+            <form action="https://formsubmit.co/0d1802db591534bb6b7efe59c95df143" method="POST" id="formulario-contacto" enctype="multipart/form-data">
+              <input type="hidden" name="_next" value="http://localhost/Proyecto_Alaska4/html/contacto.php?enviado=1">
+              <input type="hidden" name="_captcha" value="false">
+              <input type="hidden" name="_template" value="table">
+              <input type="hidden" name="_subject" value="Nuevo mensaje de contacto - Alaska">
+              <div class="grupo-formulario"><label for="nombre-contacto">Nombre Completo</label><div class="entrada-con-icono"><i class="fas fa-user"></i><input type="text" id="nombre-contacto" name="name" placeholder="Tu nombre completo" required></div></div>
+              <div class="grupo-formulario"><label for="email-contacto">Correo Electrónico</label><div class="entrada-con-icono"><i class="fas fa-envelope"></i><input type="email" id="email-contacto" name="email" placeholder="ejemplo@correo.com" required></div></div>
+              <div class="grupo-formulario"><label for="telefono-contacto">Teléfono</label><div class="entrada-con-icono"><i class="fas fa-phone"></i><input type="tel" id="telefono-contacto" name="phone" placeholder="Tu número de teléfono"></div></div>
+              <div class="grupo-formulario"><label for="asunto-contacto">Asunto</label><div class="entrada-con-icono"><i class="fas fa-tag"></i><input type="text" id="asunto-contacto" name="subject" placeholder="Asunto de tu mensaje" required></div></div>
+              <div class="grupo-formulario"><label for="mensaje-contacto">Mensaje</label><textarea id="mensaje-contacto" name="message" rows="5" placeholder="Escribe tu mensaje aquí..." required></textarea></div>
               <button type="submit" class="boton-primario boton-completo">Enviar Mensaje</button>
             </form>
           </div>
@@ -126,8 +135,13 @@ $loggedIn = isset($_SESSION['usuario_id']);
           <h3>Enlaces Rápidos</h3>
           <ul>
             <li><a href="../index.php#inicio">Inicio</a></li>
+            <?php if (!$loggedIn): ?>
             <li><a href="../index.php#nosotros">Nosotros</a></li>
+            <?php endif; ?>
             <li><a href="contacto.php">Contacto</a></li>
+            <?php if ($loggedIn): ?>
+            <li><a href="citas.html">Citas</a></li>
+            <?php endif; ?>
             <li><a href="blog.php">Blog</a></li>
           </ul>
         </div>
@@ -165,6 +179,8 @@ $loggedIn = isset($_SESSION['usuario_id']);
     })();
     (function(){
       const form = document.getElementById('formulario-contacto'); const cont = document.getElementById('mensaje-estado'); if (!form || !cont) return;
+      // Si el action apunta a FormSubmit, no interceptar el submit: dejar envío nativo
+      try { if (/formsubmit\.co/i.test(form.action)) { return; } } catch(_) {}
       function msg(ok, t){ cont.textContent=t; cont.classList.remove('exito','error'); cont.classList.add(ok?'exito':'error'); cont.style.display='block'; setTimeout(()=>{cont.style.display='none';},5000); cont.scrollIntoView({behavior:'smooth',block:'center'}); }
       form.addEventListener('submit', async (e)=>{
         try{ e.preventDefault(); const btn=form.querySelector('[type="submit"]'); const txt=btn?btn.textContent:''; if(btn){btn.disabled=true; btn.textContent='Enviando...';}
