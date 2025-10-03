@@ -102,7 +102,49 @@ $loggedIn = isset($_SESSION['usuario_id']);
 
     <section class="seccion-mapa">
       <div class="contenedor-mapa">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3963.952912260219!2d-79.9009933857707!3d-2.158209398391244!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMsKwMDknMjkuNiJTIDc5wrA1Myc1OS4yIlc!5e0!3m2!1ses!2sec!4v1620151864693!5m2!1ses!2sec" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        <!-- Contenedor del mapa de Leaflet -->
+        <div id="mapa-contacto" style="width: 100%; height: 450px;"></div>
+        
+        <!-- Incluir CSS de Leaflet -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+              integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+              crossorigin=""/>
+        
+        <!-- Incluir JavaScript de Leaflet (después del CSS) -->
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+                integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+                crossorigin=""></script>
+        
+        <!-- Script para inicializar el mapa -->
+        <script>
+          document.addEventListener('DOMContentLoaded', function() {
+            // Coordenadas para la Clínica Veterinaria Alaska (La Ceja, Antioquia, Colombia)
+            var lat = 6.0308;
+            var lng = -75.4294;
+            
+            // Inicializar el mapa
+            var map = L.map('mapa-contacto').setView([lat, lng], 15);
+            
+            // Añadir capa de mapa base (OpenStreetMap)
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            
+            // Añadir marcador personalizado
+            var clinicaIcon = L.icon({
+              iconUrl: '../img/alaska-ico.ico',
+              iconSize: [32, 32],
+              iconAnchor: [16, 32],
+              popupAnchor: [0, -32]
+            });
+            
+            // Añadir el marcador al mapa
+            var marker = L.marker([lat, lng], {icon: clinicaIcon}).addTo(map);
+            
+            // Añadir popup con información
+            marker.bindPopup("<b>Clínica Veterinaria Alaska</b><br>Calle 20 #20-40<br>La Ceja, Antioquia, Colombia<br>Tel: +57 604 553 1234").openPopup();
+          });
+        </script>
       </div>
     </section>
 
