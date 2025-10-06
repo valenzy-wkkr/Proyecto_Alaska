@@ -43,8 +43,7 @@
                 <li><a href="/Proyecto_Alaska4/html/contacto.php">Contacto</a></li>
                 <li><a href="/Proyecto_Alaska4/html/citas.html">Citas</a></li>
                 <li><a href="/Proyecto_Alaska4/html/blog.php">Blog</a></li>
-                <!-- <li><a href="/Proyecto_Alaska4/html/contacto.html">Contacto</a></li> -->
-                <li><a href="/Proyecto_Alaska4/public/api/auth/logout.php" class="boton-nav" id="btnCerrarSesion">Cerrar Sesión</a></li>
+                <li><a href="/Proyecto_Alaska4/html/perfil.html" class="inicial-circulo" title="Perfil" aria-label="Perfil"><i class="fas fa-user" aria-hidden="true"></i></a></li>
             </ul>
         </nav>
       </div>

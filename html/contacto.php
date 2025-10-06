@@ -42,8 +42,7 @@ $loggedIn = isset($_SESSION['usuario_id']);
           <?php if (!$loggedIn): ?>
             <li><a href="../index.php#registro" class="boton-nav">Registrarse</a></li>
           <?php endif; ?>
-          <?php if ($loggedIn): ?>
-            <!-- <li><a href="../public/dashboard.php" class="inicial-circulo">U</a></li> -->
+          <?php if ($loggedIn): ?><li><a href="/Proyecto_Alaska4/html/perfil.html" class="inicial-circulo" title="Perfil" aria-label="Perfil"><i class="fas fa-user" aria-hidden="true"></i></a></li>
           <?php endif; ?>
         </ul>
       </nav>

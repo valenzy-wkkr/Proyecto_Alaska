@@ -1,52 +1,59 @@
 .inicial-circulo {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 35px !important;
-    height: 35px !important;
-    min-width: 35px !important;
-    min-height: 35px !important;
-    border-radius: 50% !important;
-    background-color: var(--color-acento) !important;
-    color: white !important;
-    padding: 0 !important;
-    margin: 0 8px !important;
-    font-weight: 600 !important;
-    font-size: 1rem !important;
-    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
-    box-shadow: 0 2px 8px rgba(255, 112, 67, 0.4) !important;
-    text-decoration: none !important;
-    line-height: 1 !important;
-    border: 2px solid rgba(255, 255, 255, 0.8) !important;
-    box-sizing: border-box !important;
-    position: relative !important;
-    overflow: hidden !important;
-    }
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #4b5563; /* icon/text color */
+  padding: 0;
+  margin: 0 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  line-height: 1;
+  box-sizing: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.25s ease,
+    filter 0.25s ease;
+  will-change: transform, filter;
+}
 
-    .inicial-circulo:hover {
-    background-color: rgba(255, 112, 67, 0.9) !important;
-    color: white !important;
-    transform: translateY(-2px) scale(1.08) !important;
-    box-shadow: 0 4px 15px rgba(255, 112, 67, 0.6) !important;
-    border-color: rgba(255, 255, 255, 1) !important;
-    }
+.inicial-circulo:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16);
+  filter: brightness(1.02);
+}
 
-    .inicial-circulo::before {
-    content: '';
-    position: absolute;
-    top: 15%;
-    left: 15%;
-    width: 20%;
-    height: 20%;
-    background: rgba(255, 255, 255, 0.4);
-    border-radius: 50%;
-    transition: all 0.3s ease;
-    opacity: 0;
-    }
+.inicial-circulo:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16) inset;
+}
 
-    .inicial-circulo:hover::before {
-    width: 70%;
-    height: 70%;
-    opacity: 1;
-    background: rgba(255, 255, 255, 0.2);
-    }
+.inicial-circulo:focus-visible {
+  outline: 2px solid rgba(91, 140, 90, 0.35);
+  outline-offset: 2px;
+}
+
+/* Variante para fondo sólido (opcional) */
+.inicial-circulo--solid {
+  background: var(--color-primario, #5b8c5a);
+}
+
+/* Soporte para modo oscuro si existe variable */
+@media (prefers-color-scheme: dark) {
+  .inicial-circulo {
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Icon size inside the circle */
+.inicial-circulo i {
+  font-size: 18px;
+  line-height: 1;
+}
