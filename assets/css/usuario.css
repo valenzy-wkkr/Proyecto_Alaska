@@ -1,0 +1,58 @@
+.inicial-circulo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #4b5563; /* icon/text color */
+  padding: 0;
+  margin: 0 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  line-height: 1;
+  box-sizing: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+  transition: transform .18s ease, box-shadow .18s ease, background .25s ease, filter .25s ease;
+  will-change: transform, filter;
+}
+
+.inicial-circulo:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.16);
+  filter: brightness(1.02);
+}
+
+.inicial-circulo:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.16) inset;
+}
+
+.inicial-circulo:focus-visible {
+  outline: 2px solid rgba(91, 140, 90, 0.35);
+  outline-offset: 2px;
+}
+
+/* Variante para fondo sólido (opcional) */
+.inicial-circulo--solid {
+  background: var(--color-primario, #5B8C5A);
+}
+
+/* Soporte para modo oscuro si existe variable */
+@media (prefers-color-scheme: dark) {
+  .inicial-circulo {
+    border-color: rgba(255,255,255,0.20);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.30);
+  }
+}
+
+/* Icon size inside the circle */
+.inicial-circulo i {
+  font-size: 18px;
+  line-height: 1;
+}

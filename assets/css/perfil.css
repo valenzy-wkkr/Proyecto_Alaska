@@ -1,0 +1,47 @@
+  .perfil-main {background:#f8f9fa;min-height:calc(100vh - 80px);padding:2rem 0;}
+            .perfil-grid {display:grid;grid-template-columns:320px 1fr;gap:2rem;align-items:start;}
+            @media (max-width: 900px){.perfil-grid{grid-template-columns:1fr;}}
+            .card-perfil {background:#fff;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.08);padding:1.5rem;position:relative;overflow:hidden;}
+            .card-perfil:not(:last-child){margin-bottom:1.5rem;}
+            .header-perfil {display:flex;align-items:center;gap:1rem;margin-bottom:1rem;}
+            .avatar {width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--color-primario),var(--color-secundario));display:flex;align-items:center;justify-content:center;color:#fff;font-size:2rem;font-weight:600;box-shadow:0 4px 12px rgba(0,0,0,.15);}
+            .acciones-perfil {display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.5rem;}
+            .acciones-perfil button {background:var(--color-primario);color:#fff;border:none;padding:.5rem .9rem;border-radius:8px;font-size:.85rem;cursor:pointer;display:flex;align-items:center;gap:.4rem;transition:var(--transicion);}
+            .acciones-perfil button:hover {background:var(--color-primario-oscuro);}
+            .acciones-perfil .danger {background:var(--color-secundario);} .acciones-perfil .danger:hover {background:#ff5722;}
+            .badge-plan {display:inline-flex;align-items:center;gap:.35rem;background:linear-gradient(135deg,var(--color-secundario),var(--color-acento));color:#fff;padding:.35rem .75rem;border-radius:30px;font-size:.7rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;box-shadow:0 2px 6px rgba(0,0,0,.15);}
+            .info-usuario h2 {margin:0;font-size:1.35rem;color:var(--color-primario);} .info-usuario p {margin:.15rem 0;font-size:.9rem;color:var(--color-texto-claro);} 
+            .seccion-subtitulo {font-size:.8rem;font-weight:600;color:var(--color-texto-claro);letter-spacing:.5px;text-transform:uppercase;margin:0 0 .75rem;display:flex;align-items:center;gap:.4rem;}
+            .lista-datos {list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.6rem;}
+            .lista-datos li {display:flex;align-items:center;gap:.7rem;font-size:.9rem;color:var(--color-texto);} .lista-datos li i {color:var(--color-primario);font-size:1rem;}
+            .divider {height:1px;background:linear-gradient(90deg,transparent,var(--color-borde),transparent);margin:1.1rem 0;}
+            /* Mascotas */
+            .pets-wrapper {display:flex;flex-direction:column;gap:1rem;}
+            .pet-card {background:var(--fondo-claro);border:1px solid var(--color-borde);padding:1rem 1rem .9rem;border-radius:10px;position:relative;transition:var(--transicion);}
+            .pet-card:hover {box-shadow:0 4px 14px rgba(0,0,0,.1);transform:translateY(-3px);} 
+            .pet-head {display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;}
+            .pet-name {margin:0;font-weight:600;color:var(--color-texto);} .pet-species {font-size:.7rem;letter-spacing:.5px;text-transform:uppercase;background:var(--color-primario-claro);color:var(--color-primario-oscuro);padding:.25rem .55rem;border-radius:20px;font-weight:600;}
+            .pet-meta {display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:.6rem;margin-top:.4rem;}
+            .pet-meta-item {background:#fff;border:1px solid var(--color-borde);border-radius:8px;padding:.5rem .6rem;display:flex;flex-direction:column;gap:.15rem;}
+            .pet-meta-item span {font-size:.65rem;font-weight:600;color:var(--color-texto-claro);letter-spacing:.5px;text-transform:uppercase;} .pet-meta-item strong {font-size:.85rem;font-weight:600;color:var(--color-texto);}
+            .acciones-pet {margin-top:.6rem;display:flex;gap:.5rem;flex-wrap:wrap;}
+            .acciones-pet button {border:none;background:var(--color-primario);color:#fff;padding:.4rem .7rem;border-radius:6px;font-size:.7rem;display:inline-flex;align-items:center;gap:.3rem;cursor:pointer;transition:var(--transicion);} .acciones-pet button:hover {background:var(--color-primario-oscuro);} .acciones-pet button.danger {background:var(--color-secundario);} .acciones-pet button.danger:hover {background:#ff5722;}
+            /* Tabs Ajustes */
+            .tabs {display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem;}
+            .tabs button {background:var(--fondo-claro);border:1px solid var(--color-borde);padding:.55rem 1rem;border-radius:30px;font-size:.75rem;font-weight:600;cursor:pointer;color:var(--color-texto-claro);transition:var(--transicion);} 
+            .tabs button.activo, .tabs button:hover {background:var(--color-primario);color:#fff;border-color:var(--color-primario);} 
+            .panel-ajuste {display:none;animation:fade .35s ease;} .panel-ajuste.activo {display:block;} @keyframes fade {from {opacity:0;transform:translateY(6px);} to {opacity:1;transform:translateY(0);} }
+            .grupo-form-perfil {margin-bottom:1rem;}
+            .grupo-form-perfil label {display:block;font-size:.75rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--color-texto-claro);margin-bottom:.35rem;}
+            .grupo-form-perfil input, .grupo-form-perfil select, .grupo-form-perfil textarea {width:100%;padding:.65rem .8rem;border:1px solid var(--color-borde);border-radius:8px;font-size:.85rem;font-family:inherit;transition:var(--transicion);background:#fff;}
+            .grupo-form-perfil input:focus, .grupo-form-perfil select:focus, .grupo-form-perfil textarea:focus {outline:none;border-color:var(--color-primario);box-shadow:0 0 0 3px rgba(91,140,90,.15);} 
+            .form-inline-dos {display:grid;grid-template-columns:1fr 1fr;gap:.9rem;} @media (max-width:600px){.form-inline-dos{grid-template-columns:1fr;}}
+            .btn-guardar {background:var(--color-acento);color:#fff;border:none;padding:.7rem 1.4rem;border-radius:8px;font-weight:600;font-size:.85rem;cursor:pointer;transition:var(--transicion);box-shadow:0 2px 6px rgba(0,0,0,.15);} .btn-guardar:hover {background:#ff5722;}
+            .alerta-lite {background:#fff3e0;border:1px solid #ffc58f;padding:.8rem 1rem;border-radius:10px;font-size:.75rem;display:flex;gap:.6rem;align-items:flex-start;line-height:1.3;color:#7a4a00;margin:1rem 0;font-weight:500;}
+            .alerta-lite i {color:#ff7043;font-size:1rem;}
+            .upgrade-box {background:linear-gradient(135deg,var(--color-primario),var(--color-primario-oscuro));color:#fff;padding:1.2rem 1.1rem;border-radius:14px;position:relative;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.18);}
+            .upgrade-box::after {content:"";position:absolute;inset:0;background:radial-gradient(circle at 85% 20%,rgba(255,255,255,.18),transparent 60%);pointer-events:none;}
+            .upgrade-box h3 {margin:0 0 .4rem;font-size:1.05rem;letter-spacing:.5px;color:#fff;}
+            .upgrade-box p {margin:0 0 .7rem;font-size:.75rem;line-height:1.35;}
+            .upgrade-box button {background:var(--color-secundario);color:#fff;border:none;padding:.6rem 1rem;border-radius:8px;font-size:.75rem;font-weight:600;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.2);display:inline-flex;align-items:center;gap:.4rem;}
+            .upgrade-box button:hover {background:#ff5722;}

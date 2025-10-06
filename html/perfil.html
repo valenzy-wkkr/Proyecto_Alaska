@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Perfil de Usuario - Alaska</title>
+        <link rel="stylesheet" href="../assets/css/style.css" />
+        <link rel="stylesheet" href="../assets/css/dashboard.css" />
+        <link rel="stylesheet" href="../assets/css/usuario.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="shortcut icon" href="../img/alaska-ico.ico" type="image/x-icon" />
+        <link rel="stylesheet" href="../assets/css/perfil.css">
+    </head>
+    <body>
+        <header class="cabecera-principal">
+            <div class="contenedor contenedor-cabecera">
+                <div class="logo">
+                    <div class="contenedor-logo">
+                        <div class="contenedor-imagen-logo">
+                            <img src="../img/logo.jpg" alt="Logo Alaska" class="img-logo" />
+                        </div>
+                        <h1>ALASKA</h1>
+                    </div>
+                </div>
+                <nav class="navegacion-principal">
+                    <button class="boton-menu-movil" aria-label="Abrir menú">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <ul class="lista-navegacion">
+                        <li><a href="../index.php">Inicio</a></li>
+                        <li><a href="contacto.php">Contacto</a></li>
+                        <li><a href="citas.html">Citas</a></li>
+                        <li><a href="blog.php">Blog</a></li>
+                        <!-- <li><a href="perfil.html" class="inicial-circulo" title="Perfil">U</a></li> -->
+                        <li><a href="/Proyecto_Alaska4/public/api/auth/logout.php" class="boton-nav" id="btnCerrarSesion">Cerrar Sesión</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <main class="perfil-main">
+            <div class="contenedor perfil-grid">
+                <!-- Columna Izquierda: Info Usuario -->
+                <div>
+                    <div class="card-perfil" id="card-info-usuario">
+                        <div class="header-perfil">
+                            <div class="avatar" id="avatarInicial">U</div>
+                            <div class="info-usuario">
+                                <h2 id="nombreUsuario">Usuario Demo</h2>
+                                <p id="emailUsuario"><i class="fas fa-envelope"></i> usuario@demo.com</p>
+                                <p id="fechaRegistro"><i class="fas fa-calendar-alt"></i> Miembro desde: 2025</p>
+                                <div style="margin-top:.4rem;display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;">
+                                    <span class="badge-plan" id="badgePlan"><i class="fas fa-crown"></i> Básico</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="acciones-perfil">
+                            <button id="btnEditarPerfil"><i class="fas fa-user-pen"></i> Editar</button>
+                            <button id="btnCambiarClave"><i class="fas fa-key"></i> Clave</button>
+                            <button id="btnCerrarSesion" class="danger"><i class="fas fa-right-from-bracket"></i> Salir</button>
+                        </div>
+                        <div class="divider"></div>
+                        <h4 class="seccion-subtitulo"><i class="fas fa-id-card"></i> Detalles</h4>
+                        <ul class="lista-datos" id="listaDatosUsuario">
+                            <li><i class="fas fa-user"></i> <span id="datoNombre">Nombre: Usuario Demo</span></li>
+                            <li><i class="fas fa-globe"></i> <span id="datoUbicacion">Ubicación: -</span></li>
+                            <li><i class="fas fa-paw"></i> <span id="datoMascotas">Mascotas registradas: 0</span></li>
+                            <li><i class="fas fa-clock"></i> <span id="datoUltimoAcceso">Último acceso: -</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="card-perfil" id="card-upgrade">
+                        <div class="upgrade-box">
+                            <h3><i class="fas fa-rocket"></i> Mejora tu experiencia</h3>
+                            <p>Desbloquea recordatorios ilimitados, historial extendido y reportes PDF avanzados pasando a Premium.</p>
+                            <button id="btnUpgrade"><i class="fas fa-crown"></i> Actualizar Plan</button>
+                        </div>
+                        <div class="alerta-lite"><i class="fas fa-info-circle"></i> En el plan Básico algunas funciones se limitan tras 10 registros (recordatorios, citas y mascotas).</div>
+                    </div>
+                </div>
+
+                <!-- Columna Derecha: Mascotas y Ajustes -->
+                <div>
+                    <div class="card-perfil" id="card-mis-mascotas">
+                        <div class="header-perfil" style="margin-bottom:.4rem;">
+                            <h2 style="margin:0;font-size:1.15rem;display:flex;align-items:center;gap:.5rem;color:var(--color-primario);"><i class="fas fa-paw"></i> Mis Mascotas</h2>
+                            <button id="btnNuevaMascota" style="background:var(--color-primario);color:#fff;border:none;padding:.5rem .8rem;border-radius:8px;font-size:.75rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:.4rem;"><i class="fas fa-plus"></i> Añadir</button>
+                        </div>
+                        <div class="pets-wrapper" id="listaMascotas">
+                            <div class="pet-card placeholder" style="text-align:center;padding:2.2rem 1rem;">
+                                <p style="margin:0;color:var(--color-texto-claro);font-size:.9rem;">
+                                    <i class="fas fa-dog" style="font-size:1.4rem;color:var(--color-primario);"></i><br />No tienes mascotas registradas aún.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                        <div class="card-perfil" id="card-ajustes">
+                            <div class="header-perfil" style="margin-bottom:.4rem;">
+                                <h2 style="margin:0;font-size:1.15rem;display:flex;align-items:center;gap:.5rem;color:var(--color-primario);"><i class="fas fa-sliders"></i> Ajustes</h2>
+                            </div>
+                            <div class="tabs" id="tabsAjustes">
+                                <button data-tab="perfil" class="activo"><i class="fas fa-user"></i> Perfil</button>
+                                <button data-tab="seguridad"><i class="fas fa-shield"></i> Seguridad</button>
+                                <button data-tab="preferencias"><i class="fas fa-gear"></i> Preferencias</button>
+                                <button data-tab="notificaciones"><i class="fas fa-bell"></i> Notificaciones</button>
+                            </div>
+                            <div class="paneles">
+                                <div class="panel-ajuste activo" id="panel-perfil">
+                                    <form id="formPerfil">
+                                        <div class="form-inline-dos">
+                                            <div class="grupo-form-perfil">
+                                                <label for="inpNombre">Nombre</label>
+                                                <input id="inpNombre" type="text" placeholder="Tu nombre" />
+                                            </div>
+                                            <div class="grupo-form-perfil">
+                                                <label for="inpApellido">Apellido</label>
+                                                <input id="inpApellido" type="text" placeholder="Tu apellido" />
+                                            </div>
+                                        </div>
+                                        <div class="grupo-form-perfil">
+                                            <label for="inpUbicacion">Ubicación</label>
+                                            <input id="inpUbicacion" type="text" placeholder="Ciudad / País" />
+                                        </div>
+                                        <div class="grupo-form-perfil">
+                                            <label for="inpBio">Bio</label>
+                                            <textarea id="inpBio" rows="3" placeholder="Cuéntanos algo sobre ti..."></textarea>
+                                        </div>
+                                        <button type="submit" class="btn-guardar"><i class="fas fa-save"></i> Guardar Cambios</button>
+                                    </form>
+                                </div>
+                                <div class="panel-ajuste" id="panel-seguridad">
+                                    <form id="formSeguridad">
+                                        <div class="grupo-form-perfil">
+                                            <label for="inpEmail">Email</label>
+                                            <input id="inpEmail" type="email" placeholder="email@ejemplo.com" />
+                                        </div>
+                                        <div class="form-inline-dos">
+                                            <div class="grupo-form-perfil">
+                                                <label for="inpClaveActual">Clave Actual</label>
+                                                <input id="inpClaveActual" type="password" />
+                                            </div>
+                                            <div class="grupo-form-perfil">
+                                                <label for="inpClaveNueva">Nueva Clave</label>
+                                                <input id="inpClaveNueva" type="password" />
+                                            </div>
+                                        </div>
+                                        <div class="grupo-form-perfil">
+                                            <label for="inpRepiteClave">Repite Nueva Clave</label>
+                                            <input id="inpRepiteClave" type="password" />
+                                        </div>
+                                        <button type="submit" class="btn-guardar"><i class="fas fa-lock"></i> Actualizar Clave</button>
+                                    </form>
+                                </div>
+                                <div class="panel-ajuste" id="panel-preferencias">
+                                    <form id="formPreferencias">
+                                        <div class="grupo-form-perfil">
+                                            <label for="selIdioma">Idioma</label>
+                                            <select id="selIdioma"><option value="es">Español</option><option value="en">Inglés</option></select>
+                                        </div>
+                                        <div class="grupo-form-perfil">
+                                            <label for="selTema">Tema</label>
+                                            <select id="selTema"><option value="claro">Claro</option><option value="oscuro">Oscuro</option></select>
+                                        </div>
+                                        <button type="submit" class="btn-guardar"><i class="fas fa-palette"></i> Guardar Preferencias</button>
+                                    </form>
+                                </div>
+                                <div class="panel-ajuste" id="panel-notificaciones">
+                                    <form id="formNotificaciones">
+                                        <div class="grupo-form-perfil">
+                                            <label>Recordatorios</label>
+                                            <select id="selRecordatorios"><option value="email">Email</option><option value="app">In-App</option><option value="ambos">Ambos</option></select>
+                                        </div>
+                                        <div class="grupo-form-perfil">
+                                            <label>Frecuencia Resumen</label>
+                                            <select id="selFrecuencia"><option value="diario">Diario</option><option value="semanal">Semanal</option><option value="mensual">Mensual</option></select>
+                                        </div>
+                                        <button type="submit" class="btn-guardar"><i class="fas fa-bell"></i> Guardar Notificaciones</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="pie-pagina">
+            <div class="contenedor">
+                <div class="contenido-footer">
+                    <div class="columna-footer info-contacto">
+                        <h3>Contacto</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> Calle Principal 123, Ciudad</p>
+                        <p><i class="fas fa-phone"></i> +123 456 7890</p>
+                        <p><i class="fas fa-envelope"></i> info@alaska-mascotas.com</p>
+                    </div>
+                    <div class="columna-footer enlaces-rapidos">
+                        <h3>Enlaces Rápidos</h3>
+                        <ul>
+                            <li><a href="../index.php">Inicio</a></li>
+                            <li><a href="../index.php#contacto">Contacto</a></li>
+                            <li><a href="citas.html">Citas</a></li>
+                            <li><a href="blog.php">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="columna-footer redes-sociales">
+                        <h3>Síguenos</h3>
+                        <div class="iconos-sociales">
+                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="copyright">
+                    <p>&copy; 2025 Alaska - Cuidado de Mascotas. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </footer>
+
+        <script>
+            // Simulación de datos (se podrían obtener via fetch a una API PHP)
+            const usuarioDemo = {
+                nombre: 'Valentina',
+                apellido: 'Rodríguez',
+                email: 'valentina@example.com',
+                fechaRegistro: '2025-01-12',
+                plan: 'basico', // basico | premium
+                ubicacion: 'Buenos Aires, AR',
+                ultimoAcceso: new Date().toLocaleString(),
+                mascotas: []
+            };
+
+            const inicial = (nombre='Usuario') => nombre.trim().charAt(0).toUpperCase();
+
+            function formatearFecha(fechaStr){
+                try {const d = new Date(fechaStr);return d.toLocaleDateString();} catch(e){return fechaStr;}
+            }
+
+            function pintarUsuario(){
+                avatarInicial.textContent = inicial(usuarioDemo.nombre);
+                nombreUsuario.textContent = usuarioDemo.nombre + ' ' + (usuarioDemo.apellido||'');
+                emailUsuario.innerHTML = '<i class="fas fa-envelope"></i> ' + usuarioDemo.email;
+                fechaRegistro.innerHTML = '<i class="fas fa-calendar-alt"></i> Miembro desde: ' + formatearFecha(usuarioDemo.fechaRegistro);
+                datoNombre.textContent = 'Nombre: ' + nombreUsuario.textContent;
+                datoUbicacion.textContent = 'Ubicación: ' + (usuarioDemo.ubicacion || '-');
+                datoMascotas.textContent = 'Mascotas registradas: ' + usuarioDemo.mascotas.length;
+                datoUltimoAcceso.textContent = 'Último acceso: ' + usuarioDemo.ultimoAcceso;
+                badgePlan.innerHTML = usuarioDemo.plan === 'premium' ? '<i class="fas fa-crown"></i> Premium' : '<i class="fas fa-crown"></i> Básico';
+                if(usuarioDemo.plan === 'premium'){
+                    document.querySelector('#card-upgrade').style.display='none';
+                    badgePlan.classList.add('premium');
+                }
+            }
+
+            function agregarMascotaDemo(){
+                const nueva = { id:Date.now(), nombre:'Luna', especie:'Gato', edad:2, peso:'4kg', salud:'Sana'};
+                usuarioDemo.mascotas.push(nueva); renderMascotas();
+            }
+
+            function renderMascotas(){
+                const cont = document.getElementById('listaMascotas');
+                cont.innerHTML='';
+                if(usuarioDemo.mascotas.length === 0){
+                    cont.innerHTML = `<div class="pet-card placeholder" style="text-align:center;padding:2.2rem 1rem;">
+                            <p style="margin:0;color:var(--color-texto-claro);font-size:.9rem;">
+                            <i class='fas fa-dog' style='font-size:1.4rem;color:var(--color-primario);'></i><br />No tienes mascotas registradas aún.
+                            </p></div>`;return;
+                }
+                usuarioDemo.mascotas.forEach(m => {
+                    const div = document.createElement('div');
+                    div.className='pet-card';
+                        div.innerHTML = `
+                        <div class='pet-head'>
+                            <h4 class='pet-name'>${m.nombre}</h4>
+                            <span class='pet-species'>${m.especie}</span>
+                        </div>
+                        <div class='pet-meta'>
+                            <div class='pet-meta-item'><span>Edad</span><strong>${m.edad} años</strong></div>
+                            <div class='pet-meta-item'><span>Peso</span><strong>${m.peso}</strong></div>
+                            <div class='pet-meta-item'><span>Salud</span><strong>${m.salud}</strong></div>
+                        </div>
+                        <div class='acciones-pet'>
+                            <button data-id='${m.id}' class='btn-edit-pet'><i class="fas fa-pen"></i> Editar</button>
+                            <button data-id='${m.id}' class='danger btn-del-pet'><i class="fas fa-trash"></i> Eliminar</button>
+                        </div>`;
+                    cont.appendChild(div);
+                });
+                datoMascotas.textContent = 'Mascotas registradas: ' + usuarioDemo.mascotas.length;
+            }
+
+            function initTabs(){
+                const tabs = document.querySelectorAll('#tabsAjustes button');
+                const paneles = document.querySelectorAll('.panel-ajuste');
+                tabs.forEach(btn => btn.addEventListener('click', () => {
+                    tabs.forEach(b=>b.classList.remove('activo'));
+                    btn.classList.add('activo');
+                    paneles.forEach(p=>p.classList.remove('activo'));
+                    const id = 'panel-' + btn.dataset.tab;
+                    const panel = document.getElementById(id);
+                    if(panel) panel.classList.add('activo');
+                }));
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                pintarUsuario();
+                renderMascotas();
+                initTabs();
+                btnNuevaMascota.addEventListener('click', agregarMascotaDemo);
+                btnUpgrade.addEventListener('click', () => {alert('Función de upgrade en desarrollo');});
+                btnCerrarSesion.addEventListener('click', () => {alert('Cerrar sesión (implementar)');});
+                formPerfil.addEventListener('submit', e=>{e.preventDefault();usuarioDemo.nombre=inpNombre.value||usuarioDemo.nombre;usuarioDemo.apellido=inpApellido.value||'';usuarioDemo.ubicacion=inpUbicacion.value;usuarioDemo.bio=inpBio.value;pintarUsuario();alert('Perfil actualizado');});
+                formSeguridad.addEventListener('submit', e=>{e.preventDefault();alert('Actualización de clave simulada');});
+                formPreferencias.addEventListener('submit', e=>{e.preventDefault();alert('Preferencias guardadas');});
+                formNotificaciones.addEventListener('submit', e=>{e.preventDefault();alert('Notificaciones actualizadas');});
+            });
+        </script>
+        <script src="../views/MenuView.js"></script>
+    </body>
+</html>
