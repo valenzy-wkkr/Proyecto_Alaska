@@ -24,7 +24,23 @@ $loggedIn = isset($_SESSION['usuario_id']);
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="shortcut icon" href="../img/alaska-ico.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../img/alaska-ico.png" type="image/x-icon">
+    <style>
+                /************** */
+                .contenedor-imagen-logo {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: white;
+  padding: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: var(--transicion);
+}
+    </style>
   </head>
 
   
@@ -35,9 +51,9 @@ $loggedIn = isset($_SESSION['usuario_id']);
         <div class="logo">
             <div class="contenedor-logo">
                 <div class="contenedor-imagen-logo">
-                    <img src="../img/logo.jpg" alt="Logo Alaska" class="img-logo" />
+                    <img src="../img/alaska.png" alt="Logo Alaska" class="img-logo" />
                 </div>
-                <h1>ALASKA</h1>
+                <!-- <h1>ALASKA</h1> -->
             </div>
         </div>
         <nav class="navegacion-principal">
