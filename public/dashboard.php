@@ -317,6 +317,7 @@
 
     <!-- Scripts -->
     <script src="/Proyecto_Alaska/assets/js/dashboard.js?v=20251002-1"></script>
+    <script src="/Proyecto_Alaska/views/MenuView.js"></script>
     <script>
       (function () {
         try {

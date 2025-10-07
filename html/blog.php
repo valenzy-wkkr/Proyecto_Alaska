@@ -413,5 +413,6 @@ function obtenerIniciales($nombre) {
         </div>
     </footer>
     <script src="../assets/js/profile-sync.js"></script>
+    <script src="/Proyecto_Alaska/views/MenuView.js"></script>
   </body>
 </html>
