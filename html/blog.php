@@ -2,7 +2,42 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+require_once __DIR__ . '/../app/core/Autoloader.php';
+use App\Core\Database;
+
 $loggedIn = isset($_SESSION['usuario_id']);
+
+// Obtener datos del usuario si está logueado
+$fotoPerfil = '';
+$nombreUsuario = 'Usuario';
+
+if ($loggedIn) {
+  $usuarioId = $_SESSION['usuario_id'];
+  $nombreUsuario = $_SESSION['nombre'] ?? 'Usuario';
+  
+  try {
+    $db = Database::getConnection();
+    $stmt = $db->prepare("SELECT foto_perfil FROM usuarios WHERE id = ?");
+    $stmt->bind_param('i', $usuarioId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($row = $result->fetch_assoc()) {
+      $fotoPerfil = $row['foto_perfil'] ?? '';
+    }
+  } catch (Exception $e) {
+    $fotoPerfil = '';
+  }
+}
+
+// Función para obtener iniciales
+function obtenerIniciales($nombre) {
+  $palabras = explode(' ', trim($nombre));
+  if (count($palabras) >= 2) {
+    return strtoupper(substr($palabras[0], 0, 1) . substr($palabras[1], 0, 1));
+  }
+  return strtoupper(substr($nombre, 0, 1));
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -76,7 +111,15 @@ $loggedIn = isset($_SESSION['usuario_id']);
                 <li><a href="../index.php#registro" class="boton-nav">Registrarse</a></li>
                 <?php endif; ?>
                 <?php if ($loggedIn): ?>
-                    <li><a href="/Proyecto_Alaska4/html/perfil.html" class="inicial-circulo" title="Perfil" aria-label="Perfil"><i class="fas fa-user" aria-hidden="true"></i></a></li>
+                    <li>
+                      <a href="/Proyecto_Alaska/html/perfil.php" class="inicial-circulo" title="Perfil" aria-label="Perfil">
+                        <?php if (!empty($fotoPerfil) && file_exists(__DIR__ . '/../uploads/perfiles/' . $fotoPerfil)): ?>
+                          <img src="/Proyecto_Alaska/uploads/perfiles/<?php echo htmlspecialchars($fotoPerfil); ?>" alt="Perfil" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                        <?php else: ?>
+                          <?php echo obtenerIniciales($nombreUsuario); ?>
+                        <?php endif; ?>
+                      </a>
+                    </li>
                 <?php endif; ?>
             </ul>
         </nav>
@@ -369,5 +412,6 @@ $loggedIn = isset($_SESSION['usuario_id']);
             </div>
         </div>
     </footer>
+    <script src="../assets/js/profile-sync.js"></script>
   </body>
 </html>

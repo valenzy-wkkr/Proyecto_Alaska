@@ -3,6 +3,7 @@ namespace App\Models;
 
 use App\Core\Database;
 use mysqli;
+use Exception;
 
 class Pet
 {
@@ -82,9 +83,65 @@ class Pet
 
     public function delete(int $usuarioId, int $id): bool
     {
-        $sql = "DELETE FROM mascotas WHERE id = ? AND usuario_id = ?";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bind_param('ii', $id, $usuarioId);
-        return $stmt->execute();
+        // Iniciar transacción para asegurar que ambas eliminaciones se hagan o ninguna
+        $this->db->autocommit(false);
+        
+        try {
+            // Primero eliminar las citas asociadas a esta mascota
+            $sqlCitas = "DELETE FROM citas WHERE mascota_id = ? AND usuario_id = ?";
+            $stmtCitas = $this->db->prepare($sqlCitas);
+            
+            if (!$stmtCitas) {
+                throw new Exception("Error preparando query DELETE citas: " . $this->db->error);
+            }
+            
+            $stmtCitas->bind_param('ii', $id, $usuarioId);
+            $resultCitas = $stmtCitas->execute();
+            
+            if (!$resultCitas) {
+                throw new Exception("Error ejecutando DELETE citas: " . $stmtCitas->error);
+            }
+            
+            $citasEliminadas = $stmtCitas->affected_rows;
+            error_log("Citas eliminadas para mascota ID $id: $citasEliminadas");
+            
+            // Luego eliminar la mascota
+            $sqlMascota = "DELETE FROM mascotas WHERE id = ? AND usuario_id = ?";
+            $stmtMascota = $this->db->prepare($sqlMascota);
+            
+            if (!$stmtMascota) {
+                throw new Exception("Error preparando query DELETE mascota: " . $this->db->error);
+            }
+            
+            $stmtMascota->bind_param('ii', $id, $usuarioId);
+            $resultMascota = $stmtMascota->execute();
+            
+            if (!$resultMascota) {
+                throw new Exception("Error ejecutando DELETE mascota: " . $stmtMascota->error);
+            }
+            
+            $mascotasEliminadas = $stmtMascota->affected_rows;
+            error_log("Mascotas eliminadas: $mascotasEliminadas");
+            
+            // Si todo salió bien, confirmar la transacción
+            if ($mascotasEliminadas > 0) {
+                $this->db->commit();
+                error_log("Eliminación exitosa: mascota ID $id y $citasEliminadas citas asociadas");
+                return true;
+            } else {
+                $this->db->rollback();
+                error_log("No se eliminó ninguna mascota con ID $id");
+                return false;
+            }
+            
+        } catch (Exception $e) {
+            // En caso de error, hacer rollback
+            $this->db->rollback();
+            error_log("Error en eliminación de mascota: " . $e->getMessage());
+            return false;
+        } finally {
+            // Restaurar autocommit
+            $this->db->autocommit(true);
+        }
     }
 }

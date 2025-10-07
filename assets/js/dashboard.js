@@ -721,26 +721,32 @@ class Dashboard {
      * Elimina una mascota tras confirmación
      */
     async deletePet(id) {
+        console.log('Dashboard: Eliminando mascota ID:', id); // Debug
         const pet = this.pets.find(p => p.id === id);
         const name = pet ? pet.name : '';
-        const ok = confirm(`¿Eliminar la mascota ${name ? '"' + name + '" ' : ''}definitivamente?`);
+        const ok = confirm(`¿Eliminar la mascota ${name ? '"' + name + '" ' : ''}definitivamente?\n\nEsta acción también eliminará todas las citas programadas para esta mascota.\n\nEsta acción no se puede deshacer.`);
         if (!ok) return;
 
         try {
+            console.log('Dashboard: Enviando request DELETE'); // Debug
             const response = await fetch(`api/mascotas.php?id=${encodeURIComponent(id)}`, {
                 method: 'DELETE'
             });
+            console.log('Dashboard: Response status:', response.status); // Debug
             const result = await response.json();
+            console.log('Dashboard: Response data:', result); // Debug
+            
             if (result && result.success) {
                 this.pets = this.pets.filter(p => p.id !== id);
                 this.renderPetsHealth();
                 this.updateStats();
                 this.showSuccess('Mascota eliminada exitosamente');
             } else {
+                console.error('Dashboard: Error en resultado:', result); // Debug
                 this.showError('Error al eliminar la mascota');
             }
         } catch (err) {
-            console.error('Error eliminando mascota:', err);
+            console.error('Dashboard: Error eliminando mascota:', err); // Debug
             this.showError('Error al eliminar la mascota');
         }
     }
@@ -952,7 +958,7 @@ class Dashboard {
     getArticleUrl(article) {
         // Soporte opcional por slug si el JSON lo trae
         if (article && article.slug) {
-            return `/Proyecto_Alaska4/latest_articles/${article.slug}/${article.slug}.html`;
+            return `/Proyecto_Alaska/latest_articles/${article.slug}/${article.slug}.html`;
         }
 
         const id = article?.id;
@@ -960,19 +966,19 @@ class Dashboard {
 
         // id 1 o títulos que contengan "dental"
         if (id === 1 || title.includes('dental')) {
-            return '/Proyecto_Alaska4/latest_articles/salud_Dental/dental.html';
+            return '/Proyecto_Alaska/latest_articles/salud_Dental/dental.html';
         }
         // id 2 o títulos que contengan "senior"
         if (id === 2 || title.includes('senior')) {
-            return '/Proyecto_Alaska4/latest_articles/senior/senior.html';
+            return '/Proyecto_Alaska/latest_articles/senior/senior.html';
         }
         // id 3 o títulos que contengan "gatos", "mentales" o "mental"
         if (id === 3 || title.includes('gatos') || title.includes('mentales') || title.includes('mental')) {
-            return '/Proyecto_Alaska4/latest_articles/mental_exercises/mental.html';
+            return '/Proyecto_Alaska/latest_articles/mental_exercises/mental.html';
         }
 
         // Fallback: listado del blog
-        return '/Proyecto_Alaska4/html/blog.php';
+        return '/Proyecto_Alaska/html/blog.php';
     }
 
     /**

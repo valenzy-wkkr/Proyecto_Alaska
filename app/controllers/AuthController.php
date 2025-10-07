@@ -20,7 +20,7 @@ class AuthController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             // Redirigir si se intenta acceder directamente por GET desde navegador
-            header('Location: /Proyecto_Alaska4/index.php#registro');
+            header('Location: /Proyecto_Alaska/index.php#registro');
             return;
         }
 
@@ -49,7 +49,7 @@ class AuthController extends Controller
         if ($payload['nombre'] === '' || $payload['correo'] === '' || $payload['clave'] === '' || $payload['apodo'] === '' || $payload['direccion'] === '') {
             if (!empty($_POST)) {
                 // En un flujo HTML podríamos redirigir con error; por ahora regresar al registro
-                header('Location: /Proyecto_Alaska4/index.php#registro');
+                header('Location: /Proyecto_Alaska/index.php#registro');
                 return;
             }
             $this->json(['success' => false, 'error' => 'Campos requeridos'], 400);
@@ -85,7 +85,7 @@ class AuthController extends Controller
 
         // Responder según origen
         if (!empty($_POST)) {
-            header('Location: /Proyecto_Alaska4/public/dashboard.php');
+            header('Location: /Proyecto_Alaska/public/dashboard.php');
             return;
         }
         $this->json(['success' => true, 'user' => ['id' => (int)$userId, 'nombre' => $payload['nombre'], 'correo' => $payload['correo']]]);
@@ -94,7 +94,7 @@ class AuthController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             // Si no es POST, redirigir al formulario de login
-            header('Location: /Proyecto_Alaska4/public/auth/login.php');
+            header('Location: /Proyecto_Alaska/public/auth/login.php');
             return;
         }
 
@@ -113,7 +113,7 @@ class AuthController extends Controller
         if ($email === '' || $password === '') {
             // Flujo HTML
             if (!empty($_POST)) {
-                header('Location: /Proyecto_Alaska4/public/auth/login.php?error=vacio');
+                header('Location: /Proyecto_Alaska/public/auth/login.php?error=vacio');
                 return;
             }
             // Flujo JSON
@@ -129,7 +129,7 @@ class AuthController extends Controller
 
             // Flujo HTML
             if (!empty($_POST)) {
-                header('Location: /Proyecto_Alaska4/public/dashboard.php');
+                header('Location: /Proyecto_Alaska/public/dashboard.php');
                 return;
             }
             // Flujo JSON
@@ -139,7 +139,7 @@ class AuthController extends Controller
 
         // Credenciales incorrectas
         if (!empty($_POST)) {
-            header('Location: /Proyecto_Alaska4/public/auth/login.php?error=credenciales');
+            header('Location: /Proyecto_Alaska/public/auth/login.php?error=credenciales');
             return;
         }
         $this->json(['success' => false, 'error' => 'Credenciales incorrectas'], 401);
@@ -165,7 +165,7 @@ class AuthController extends Controller
             $this->json(['success' => true]);
             return;
         }
-        header('Location: /Proyecto_Alaska4/index.php');
+        header('Location: /Proyecto_Alaska/index.php');
     }
 }
 

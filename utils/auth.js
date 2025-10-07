@@ -1,10 +1,10 @@
 // Autenticación básica en cliente para demo (no usar en producción)
 (function() {
-  // Detectar prefijo base cuando el proyecto corre bajo un subdirectorio (ej: /Proyecto_Alaska4)
+  // Detectar prefijo base cuando el proyecto corre bajo un subdirectorio (ej: /Proyecto_Alaska)
   const BASE = (function(){
     try{
       const p = location.pathname;
-      const m = p.match(/^(\/Proyecto_Alaska4)(?:\/|$)/);
+      const m = p.match(/^(\/Proyecto_Alaska)(?:\/|$)/);
       return m ? m[1] : '';
     }catch(_){ return ''; }
   })();

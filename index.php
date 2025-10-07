@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
 $loggedIn = isset($_SESSION['usuario_id']);
 // Si el usuario ya inició sesión, redirigir directamente al dashboard
 if ($loggedIn) {
-    header('Location: /Proyecto_Alaska4/public/dashboard.php');
+    header('Location: /Proyecto_Alaska/public/dashboard.php');
     exit();
 }
 ?>
@@ -119,7 +119,7 @@ if ($loggedIn) {
             <li><a href="#nosotros">Nosotros</a></li>
             <li><a href="html/contacto.php">Contacto</a></li>
             <?php if ($loggedIn): ?>
-              <li><a href="html/citas.html">Citas</a></li>
+              <li><a href="html/citas.php">Citas</a></li>
             <?php endif; ?>
             <li><a href="html/blog.php">Blog</a></li>
             <?php if (!$loggedIn): ?>
@@ -518,5 +518,6 @@ if ($loggedIn) {
         }
       }
     </script>
+    <script src="assets/js/profile-sync.js"></script>
   </body>
 </html>

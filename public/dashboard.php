@@ -1,12 +1,45 @@
 <?php
   if (session_status() === PHP_SESSION_NONE) { session_start(); }
   if (!isset($_SESSION['usuario']) || $_SESSION['usuario'] === '') {
-    header('Location: /Proyecto_Alaska4/public/auth/login.php');
+    header('Location: /Proyecto_Alaska/public/auth/login.php');
     exit();
   }
+  
+  require_once __DIR__ . '/../app/core/Autoloader.php';
+  use App\Core\Database;
+  
   $nombreUsuario = isset($_SESSION['nombre']) && $_SESSION['nombre'] !== ''
     ? $_SESSION['nombre']
     : 'Usuario';
+  
+  // Obtener foto de perfil del usuario
+  $fotoPerfil = '';
+  $usuarioId = $_SESSION['usuario_id'] ?? 0;
+  
+  if ($usuarioId > 0) {
+    try {
+      $db = Database::getConnection();
+      $stmt = $db->prepare("SELECT foto_perfil FROM usuarios WHERE id = ?");
+      $stmt->bind_param('i', $usuarioId);
+      $stmt->execute();
+      $result = $stmt->get_result();
+      if ($row = $result->fetch_assoc()) {
+        $fotoPerfil = $row['foto_perfil'] ?? '';
+      }
+    } catch (Exception $e) {
+      // En caso de error, continuar sin foto
+      $fotoPerfil = '';
+    }
+  }
+  
+  // Función para obtener iniciales
+  function obtenerIniciales($nombre) {
+    $palabras = explode(' ', trim($nombre));
+    if (count($palabras) >= 2) {
+      return strtoupper(substr($palabras[0], 0, 1) . substr($palabras[1], 0, 1));
+    }
+    return strtoupper(substr($nombre, 0, 1));
+  }
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -14,13 +47,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Panel de Control - Alaska</title>
-    <link rel="stylesheet" href="/Proyecto_Alaska4/assets/css/style.css" />
-    <link rel="stylesheet" href="/Proyecto_Alaska4/assets/css/dashboard.css?v=20250922-1" />
+    <link rel="stylesheet" href="/Proyecto_Alaska/assets/css/style.css" />
+    <link rel="stylesheet" href="/Proyecto_Alaska/assets/css/dashboard.css?v=20250922-1" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="shortcut icon" href="/Proyecto_Alaska4/img/alaska-ico.png" type="image/x-icon">
+    <link rel="shortcut icon" href="/Proyecto_Alaska/img/alaska-ico.png" type="image/x-icon">
   </head>
   <style>
                     /************** */
@@ -45,7 +78,7 @@
         <div class="logo">
             <div class="contenedor-logo">
                 <div class="contenedor-imagen-logo">
-                    <img src="/Proyecto_Alaska4/img/alaska.png" alt="Logo Alaska" class="img-logo" />
+                    <img src="/Proyecto_Alaska/img/alaska.png" alt="Logo Alaska" class="img-logo" />
                 </div>
                 <!-- <h1>ALASKA</h1> -->
             </div>
@@ -55,11 +88,19 @@
                 <i class="fas fa-bars"></i>
             </button>
             <ul class="lista-navegacion">
-                <li><a href="/Proyecto_Alaska4/index.php">Inicio</a></li>
-                <li><a href="/Proyecto_Alaska4/html/contacto.php">Contacto</a></li>
-                <li><a href="/Proyecto_Alaska4/html/citas.html">Citas</a></li>
-                <li><a href="/Proyecto_Alaska4/html/blog.php">Blog</a></li>
-                <li><a href="/Proyecto_Alaska4/html/perfil.html" class="inicial-circulo" title="Perfil" aria-label="Perfil"><i class="fas fa-user" aria-hidden="true"></i></a></li>
+                <li><a href="/Proyecto_Alaska/index.php">Inicio</a></li>
+                <li><a href="/Proyecto_Alaska/html/contacto.php">Contacto</a></li>
+                <li><a href="/Proyecto_Alaska/html/citas.php">Citas</a></li>
+                <li><a href="/Proyecto_Alaska/html/blog.php">Blog</a></li>
+                <li>
+                  <a href="/Proyecto_Alaska/html/perfil.php" class="inicial-circulo" title="Perfil" aria-label="Perfil">
+                    <?php if (!empty($fotoPerfil) && file_exists(__DIR__ . '/../uploads/perfiles/' . $fotoPerfil)): ?>
+                      <img src="/Proyecto_Alaska/uploads/perfiles/<?php echo htmlspecialchars($fotoPerfil); ?>" alt="Perfil" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                    <?php else: ?>
+                      <?php echo obtenerIniciales($nombreUsuario); ?>
+                    <?php endif; ?>
+                  </a>
+                </li>
             </ul>
         </nav>
       </div>
@@ -139,7 +180,7 @@
                     <section class="dashboard-section">
                         <div class="section-header">
                             <h2><i class="fas fa-newspaper"></i> Últimos Artículos</h2>
-                            <a href="/Proyecto_Alaska4/html/blog.php" class="btn-view-all">Ver Todos</a>
+                            <a href="/Proyecto_Alaska/html/blog.php" class="btn-view-all">Ver Todos</a>
                         </div>
                         <div class="blog-articles-container" id="blogArticlesContainer">
                             <div class="empty-state">
@@ -275,7 +316,7 @@
     </div>
 
     <!-- Scripts -->
-    <script src="/Proyecto_Alaska4/assets/js/dashboard.js?v=20251002-1"></script>
+    <script src="/Proyecto_Alaska/assets/js/dashboard.js?v=20251002-1"></script>
     <script>
       (function () {
         try {
@@ -296,5 +337,6 @@
         }
       })();
     </script>
+    <script src="../assets/js/profile-sync.js"></script>
   </body>
 </html>

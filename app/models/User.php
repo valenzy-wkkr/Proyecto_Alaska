@@ -63,4 +63,84 @@ class User
         $stmt->bind_param('si', $hashedPassword, $userId);
         return $stmt->execute();
     }
+
+    public function findById(int $userId): ?array
+    {
+        $sql = "SELECT id, nombre, correo, apodo, direccion, fecha_creacion FROM usuarios WHERE id = ? LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param('i', $userId);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        if ($row = $res->fetch_assoc()) {
+            return $row;
+        }
+        return null;
+    }
+
+    public function updateProfile(int $userId, array $data): bool
+    {
+        $sql = "UPDATE usuarios SET nombre = ?, apodo = ?, direccion = ? WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param('sssi', $data['nombre'], $data['apodo'], $data['direccion'], $userId);
+        return $stmt->execute();
+    }
+
+    public function updateEmail(int $userId, string $email): bool
+    {
+        $sql = "UPDATE usuarios SET correo = ? WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param('si', $email, $userId);
+        return $stmt->execute();
+    }
+
+    public function emailExists(string $email, ?int $excludeUserId = null): bool
+    {
+        if ($excludeUserId) {
+            $sql = "SELECT id FROM usuarios WHERE correo = ? AND id != ? LIMIT 1";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bind_param('si', $email, $excludeUserId);
+        } else {
+            $sql = "SELECT id FROM usuarios WHERE correo = ? LIMIT 1";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bind_param('s', $email);
+        }
+        $stmt->execute();
+        return $stmt->get_result()->num_rows > 0;
+    }
+
+    public function usernameExists(string $username, ?int $excludeUserId = null): bool
+    {
+        if ($excludeUserId) {
+            $sql = "SELECT id FROM usuarios WHERE apodo = ? AND id != ? LIMIT 1";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bind_param('si', $username, $excludeUserId);
+        } else {
+            $sql = "SELECT id FROM usuarios WHERE apodo = ? LIMIT 1";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bind_param('s', $username);
+        }
+        $stmt->execute();
+        return $stmt->get_result()->num_rows > 0;
+    }
+
+    public function updateProfilePicture(int $userId, string $filename): bool
+    {
+        $sql = "UPDATE usuarios SET foto_perfil = ? WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param('si', $filename, $userId);
+        return $stmt->execute();
+    }
+
+    public function getProfilePicture(int $userId): ?string
+    {
+        $sql = "SELECT foto_perfil FROM usuarios WHERE id = ? LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param('i', $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($row = $result->fetch_assoc()) {
+            return $row['foto_perfil'];
+        }
+        return null;
+    }
 }

@@ -1,7 +1,7 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) { session_start(); }
 if (isset($_SESSION['usuario'])) {
-  header('Location: /Proyecto_Alaska4/public/dashboard.php');
+  header('Location: /Proyecto_Alaska/public/dashboard.php');
   exit();
 }
 $error = isset($_GET['error']) ? $_GET['error'] : '';
@@ -12,13 +12,13 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Iniciar Sesión - Alaska</title>
-  <link rel="stylesheet" href="/Proyecto_Alaska4/assets/css/style.css" />
-  <link rel="stylesheet" href="/Proyecto_Alaska4/assets/css/login.css">
+  <link rel="stylesheet" href="/Proyecto_Alaska/assets/css/style.css" />
+  <link rel="stylesheet" href="/Proyecto_Alaska/assets/css/login.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="shortcut icon" href="/Proyecto_Alaska4/img/alaska-ico.png" type="image/x-icon">
+  <link rel="shortcut icon" href="/Proyecto_Alaska/img/alaska-ico.png" type="image/x-icon">
   <style>
             /************** */
             .contenedor-imagen-logo {
@@ -42,7 +42,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
       <div class="logo">
         <div class="contenedor-logo">
           <div class="contenedor-imagen-logo">
-            <img src="/Proyecto_Alaska4/img/alaska.png" alt="Logo Alaska" class="img-logo" />
+            <img src="/Proyecto_Alaska/img/alaska.png" alt="Logo Alaska" class="img-logo" />
           </div>
       
         </div>
@@ -52,10 +52,10 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
           <i class="fas fa-bars"></i>
         </button>
         <ul class="lista-navegacion">
-          <li><a href="/Proyecto_Alaska4/index.php#inicio">Inicio</a></li>
-          <li><a href="/Proyecto_Alaska4/index.php#nosotros">Nosotros</a></li>
-          <li><a href="/Proyecto_Alaska4/html/contacto.php">Contacto</a></li>
-          <li><a href="/Proyecto_Alaska4/html/blog.php">Blog</a></li>
+          <li><a href="/Proyecto_Alaska/index.php#inicio">Inicio</a></li>
+          <li><a href="/Proyecto_Alaska/index.php#nosotros">Nosotros</a></li>
+          <li><a href="/Proyecto_Alaska/html/contacto.php">Contacto</a></li>
+          <li><a href="/Proyecto_Alaska/html/blog.php">Blog</a></li>
         </ul>
       </nav>
     </div>
@@ -73,7 +73,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
           <?php endif; ?>
         </div>
       <?php endif; ?>
-      <form action="/Proyecto_Alaska4/public/api/auth/login.php" method="POST">
+      <form action="/Proyecto_Alaska/public/api/auth/login.php" method="POST">
         <div class="form-group">
           <label for="correo">Correo electrónico:</label>
           <input type="email" id="correo" name="correo" required>
@@ -84,7 +84,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
         </div>
         <button type="submit" class="btn-login">Iniciar Sesión</button>
       </form>
-      <a href="/Proyecto_Alaska4/public/auth/forgot.php">¿Olvidaste tu contraseña?</a>
+      <a href="/Proyecto_Alaska/public/auth/forgot.php">¿Olvidaste tu contraseña?</a>
     </div>
   </main>
 
@@ -99,10 +99,10 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
         <div class="columna-footer enlaces-rapidos">
           <h3>Enlaces Rápidos</h3>
           <ul>
-            <li><a href="/Proyecto_Alaska4/index.php#inicio">Inicio</a></li>
-            <li><a href="/Proyecto_Alaska4/index.php#nosotros">Nosotros</a></li>
-            <li><a href="/Proyecto_Alaska4/index.php#registro">Registro</a></li>
-            <li><a href="/Proyecto_Alaska4/html/blog.html">Blog</a></li>
+            <li><a href="/Proyecto_Alaska/index.php#inicio">Inicio</a></li>
+            <li><a href="/Proyecto_Alaska/index.php#nosotros">Nosotros</a></li>
+            <li><a href="/Proyecto_Alaska/index.php#registro">Registro</a></li>
+            <li><a href="/Proyecto_Alaska/html/blog.html">Blog</a></li>
           </ul>
         </div>
         <div class="columna-footer redes-sociales">
@@ -121,10 +121,10 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
     </div>
   </footer>
 
-  <script src="/Proyecto_Alaska4/views/MenuView.js"></script>
-  <script src="/Proyecto_Alaska4/views/ButtonView.js"></script>
-  <script src="/Proyecto_Alaska4/views/FormView.js"></script>
-  <script src="/Proyecto_Alaska4/assets/js/app.js"></script>
+  <script src="/Proyecto_Alaska/views/MenuView.js"></script>
+  <script src="/Proyecto_Alaska/views/ButtonView.js"></script>
+  <script src="/Proyecto_Alaska/views/FormView.js"></script>
+  <script src="/Proyecto_Alaska/assets/js/app.js"></script>
 </body>
 </html>
 
