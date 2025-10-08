@@ -566,6 +566,14 @@
   box-shadow: 0 4px 12px rgba(91, 140, 90, 0.3);
 }
 
+/* Estado activo de etiquetas (igual al hover) */
+.nube-etiquetas a.active {
+  background: var(--color-primario);
+  color: var(--color-texto-blanco);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(91, 140, 90, 0.3);
+}
+
 /* Widget de suscripción */
 .widget-suscripcion {
   background: var(--gradient-primary);
@@ -852,6 +860,7 @@
 .widget-categorias a.active {
   background: var(--color-primario);
   color: var(--color-texto-blanco);
+  transform: translateX(5px);
 }
 
 .widget-categorias a.active span {

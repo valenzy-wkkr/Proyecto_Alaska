@@ -4,6 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 require_once __DIR__ . '/../app/core/Autoloader.php';
+
 use App\Core\Database;
 
 $loggedIn = isset($_SESSION['usuario_id']);
@@ -13,35 +14,37 @@ $fotoPerfil = '';
 $nombreUsuario = 'Usuario';
 
 if ($loggedIn) {
-  $usuarioId = $_SESSION['usuario_id'];
-  $nombreUsuario = $_SESSION['nombre'] ?? 'Usuario';
-  
-  try {
-    $db = Database::getConnection();
-    $stmt = $db->prepare("SELECT foto_perfil FROM usuarios WHERE id = ?");
-    $stmt->bind_param('i', $usuarioId);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($row = $result->fetch_assoc()) {
-      $fotoPerfil = $row['foto_perfil'] ?? '';
+    $usuarioId = $_SESSION['usuario_id'];
+    $nombreUsuario = $_SESSION['nombre'] ?? 'Usuario';
+
+    try {
+        $db = Database::getConnection();
+        $stmt = $db->prepare("SELECT foto_perfil FROM usuarios WHERE id = ?");
+        $stmt->bind_param('i', $usuarioId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($row = $result->fetch_assoc()) {
+            $fotoPerfil = $row['foto_perfil'] ?? '';
+        }
+    } catch (Exception $e) {
+        $fotoPerfil = '';
     }
-  } catch (Exception $e) {
-    $fotoPerfil = '';
-  }
 }
 
 // Función para obtener iniciales
-function obtenerIniciales($nombre) {
-  $palabras = explode(' ', trim($nombre));
-  if (count($palabras) >= 2) {
-    return strtoupper(substr($palabras[0], 0, 1) . substr($palabras[1], 0, 1));
-  }
-  return strtoupper(substr($nombre, 0, 1));
+function obtenerIniciales($nombre)
+{
+    $palabras = explode(' ', trim($nombre));
+    if (count($palabras) >= 2) {
+        return strtoupper(substr($palabras[0], 0, 1) . substr($palabras[1], 0, 1));
+    }
+    return strtoupper(substr($nombre, 0, 1));
 }
 ?>
 <!DOCTYPE html>
 <html lang="es">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Blog - Alaska Cuidado de Mascotas</title>
@@ -50,80 +53,93 @@ function obtenerIniciales($nombre) {
     <link rel="stylesheet" href="../assets/css/usuario.css">
 
     <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
     <link rel="shortcut icon" href="../img/alaska-ico.png" type="image/x-icon">
     <style>
-                /************** */
-                .contenedor-imagen-logo {
-  width: 80px;
-  height: 80px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%;
-  overflow: hidden;
-  background-color: white;
-  padding: 2px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  transition: var(--transicion);
-}
-    </style>
-  </head>
+        /************** */
+        .contenedor-imagen-logo {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            overflow: hidden;
+            background-color: white;
+            padding: 2px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: var(--transicion);
+        }
 
-  
-  <body>
+        /* Categorías activas */
+        .widget-categorias a.active {
+            background: var(--color-primario);
+            color: var(--color-texto-blanco);
+            transform: translateX(5px);
+        }
+
+        /* Estado activo de etiquetas (igual al hover) */
+        .nube-etiquetas a.active {
+            background: var(--color-primario);
+            color: var(--color-texto-blanco);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(91, 140, 90, 0.3);
+        }
+    </style>
+</head>
+
+
+<body>
     <!-- Cabecera -->
     <header class="cabecera-principal">
-      <div class="contenedor contenedor-cabecera">
-        <div class="logo">
-            <div class="contenedor-logo">
-                <div class="contenedor-imagen-logo">
-                    <img src="../img/alaska.png" alt="Logo Alaska" class="img-logo" />
+        <div class="contenedor contenedor-cabecera">
+            <div class="logo">
+                <div class="contenedor-logo">
+                    <div class="contenedor-imagen-logo">
+                        <img src="../img/alaska.png" alt="Logo Alaska" class="img-logo" />
+                    </div>
+                    <!-- <h1>ALASKA</h1> -->
                 </div>
-                <!-- <h1>ALASKA</h1> -->
             </div>
+            <nav class="navegacion-principal">
+                <button class="boton-menu-movil" aria-label="Abrir menú">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="lista-navegacion">
+                    <li><a href="../index.php">Inicio</a></li>
+                    <?php if (!$loggedIn): ?>
+                        <li><a href="../index.php#nosotros">Nosotros</a></li>
+                    <?php endif; ?>
+
+                    <li><a href="contacto.php">Contacto</a></li>
+                    <?php if ($loggedIn): ?>
+                        <li><a href="citas.html">Citas</a></li>
+                    <?php endif; ?>
+
+                    <li><a href="blog.php" class="activo">Blog</a></li>
+                    <?php if (!$loggedIn): ?>
+                        <li><a href="../index.php#registro" class="boton-nav">Registrarse</a></li>
+                    <?php endif; ?>
+                    <?php if ($loggedIn): ?>
+                        <li>
+                            <a href="/Proyecto_Alaska/html/perfil.php" class="inicial-circulo" title="Perfil" aria-label="Perfil">
+                                <?php if (!empty($fotoPerfil) && file_exists(__DIR__ . '/../uploads/perfiles/' . $fotoPerfil)): ?>
+                                    <img src="/Proyecto_Alaska/uploads/perfiles/<?php echo htmlspecialchars($fotoPerfil); ?>" alt="Perfil" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                                <?php else: ?>
+                                    <?php echo obtenerIniciales($nombreUsuario); ?>
+                                <?php endif; ?>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                </ul>
+            </nav>
         </div>
-        <nav class="navegacion-principal">
-            <button class="boton-menu-movil" aria-label="Abrir menú">
-                <i class="fas fa-bars"></i>
-            </button>
-            <ul class="lista-navegacion">
-                <li><a href="../index.php">Inicio</a></li>
-                <?php if (!$loggedIn): ?>
-                <li><a href="../index.php#nosotros">Nosotros</a></li>
-                <?php endif; ?>
-
-                <li><a href="contacto.php">Contacto</a></li>
-                <?php if ($loggedIn): ?>
-                <li><a href="citas.html">Citas</a></li>
-                <?php endif; ?>
-
-                <li><a href="blog.php" class="activo">Blog</a></li>
-                <?php if (!$loggedIn): ?>
-                <li><a href="../index.php#registro" class="boton-nav">Registrarse</a></li>
-                <?php endif; ?>
-                <?php if ($loggedIn): ?>
-                    <li>
-                      <a href="/Proyecto_Alaska/html/perfil.php" class="inicial-circulo" title="Perfil" aria-label="Perfil">
-                        <?php if (!empty($fotoPerfil) && file_exists(__DIR__ . '/../uploads/perfiles/' . $fotoPerfil)): ?>
-                          <img src="/Proyecto_Alaska/uploads/perfiles/<?php echo htmlspecialchars($fotoPerfil); ?>" alt="Perfil" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
-                        <?php else: ?>
-                          <?php echo obtenerIniciales($nombreUsuario); ?>
-                        <?php endif; ?>
-                      </a>
-                    </li>
-                <?php endif; ?>
-            </ul>
-        </nav>
-      </div>
     </header>
 
     <main>
@@ -141,9 +157,9 @@ function obtenerIniciales($nombre) {
                 <div class="contenedor-blog">
                     <div class="articulos-blog">
                         <!-- Artículo destacado -->
-                        <article class="articulo-destacado">
+                        <article class="articulo-destacado" data-categoria="Salud">
                             <div class="imagen-articulo">
-                                <img src="../img/blog-destacado.jpg" alt="Artículo destacado">
+                                <img src="../img/blog-destacado.jpg" alt="Artículo destacado" loading="eager" fetchpriority="high" decoding="async" style="aspect-ratio: 16/9; width: 100%; height: auto; object-fit: cover;">
                                 <div class="etiqueta-articulo">Destacado</div>
                             </div>
                             <div class="contenido-articulo">
@@ -160,9 +176,9 @@ function obtenerIniciales($nombre) {
 
                         <!-- Artículos regulares -->
                         <div class="grid-articulos">
-                            <article class="articulo">
+                            <article class="articulo" data-categoria="Alimentación">
                                 <div class="imagen-articulo">
-                                    <img src="../img/Alimentacion.jpg" alt="Alimentación de mascotas">
+                                    <img src="../img/Alimentacion.jpg" alt="Alimentación de mascotas" loading="lazy" decoding="async" style="aspect-ratio: 16/9; width: 100%; height: auto; object-fit: cover;">
                                 </div>
                                 <div class="contenido-articulo">
                                     <div class="meta-articulo">
@@ -175,9 +191,9 @@ function obtenerIniciales($nombre) {
                                 </div>
                             </article>
 
-                            <article class="articulo">
+                            <article class="articulo" data-categoria="Entrenamiento">
                                 <div class="imagen-articulo">
-                                    <img src="../img/entrenamientoMacotas.jpg" alt="Entrenamiento de mascotas">
+                                    <img src="../img/entrenamientoMacotas.jpg" alt="Entrenamiento de mascotas" loading="lazy" decoding="async" style="aspect-ratio: 16/9; width: 100%; height: auto; object-fit: cover;">
                                 </div>
                                 <div class="contenido-articulo">
                                     <div class="meta-articulo">
@@ -190,9 +206,9 @@ function obtenerIniciales($nombre) {
                                 </div>
                             </article>
 
-                            <article class="articulo">
+                            <article class="articulo" data-categoria="Gatos">
                                 <div class="imagen-articulo">
-                                    <img src="../img/cuidaddoGatos.jpg" alt="Cuidado de gatos">
+                                    <img src="../img/cuidaddoGatos.jpg" alt="Cuidado de gatos" loading="lazy" decoding="async" style="aspect-ratio: 16/9; width: 100%; height: auto; object-fit: cover;">
                                 </div>
                                 <div class="contenido-articulo">
                                     <div class="meta-articulo">
@@ -205,9 +221,9 @@ function obtenerIniciales($nombre) {
                                 </div>
                             </article>
 
-                            <article class="articulo">
+                            <article class="articulo" data-categoria="Mascotas Exóticas">
                                 <div class="imagen-articulo">
-                                    <img src="../img/mascotasExoticas.jpg" alt="Mascotas exóticas">
+                                    <img src="../img/mascotasExoticas.jpg" alt="Mascotas exóticas" loading="lazy" decoding="async" style="aspect-ratio: 16/9; width: 100%; height: auto; object-fit: cover;">
                                 </div>
                                 <div class="contenido-articulo">
                                     <div class="meta-articulo">
@@ -220,9 +236,9 @@ function obtenerIniciales($nombre) {
                                 </div>
                             </article>
 
-                            <article class="articulo">
+                            <article class="articulo" data-categoria="Salud">
                                 <div class="imagen-articulo">
-                                    <img src="../img/salud.jpg" alt="Salud de mascotas">
+                                    <img src="../img/salud.jpg" alt="Salud de mascotas" loading="lazy" decoding="async" style="aspect-ratio: 16/9; width: 100%; height: auto; object-fit: cover;">
                                 </div>
                                 <div class="contenido-articulo">
                                     <div class="meta-articulo">
@@ -235,9 +251,9 @@ function obtenerIniciales($nombre) {
                                 </div>
                             </article>
 
-                            <article class="articulo">
+                            <article class="articulo" data-categoria="Adopción">
                                 <div class="imagen-articulo">
-                                    <img src="../img/Adopcion.jpg" alt="Adopción de mascotas">
+                                    <img src="../img/Adopcion.jpg" alt="Adopción de mascotas" loading="lazy" decoding="async" style="aspect-ratio: 16/9; width: 100%; height: auto; object-fit: cover;">
                                 </div>
                                 <div class="contenido-articulo">
                                     <div class="meta-articulo">
@@ -269,7 +285,7 @@ function obtenerIniciales($nombre) {
                             <h3>Buscar</h3>
                             <form class="formulario-busqueda">
                                 <input type="text" placeholder="Buscar artículos...">
-                                <button type="submit"><i class="fas fa-search"></i></button>
+                                <!-- <button type="submit"><i class="fas fa-search"></i></button> -->
                             </form>
                         </div>
 
@@ -277,13 +293,13 @@ function obtenerIniciales($nombre) {
                         <div class="widget widget-categorias">
                             <h3>Categorías</h3>
                             <ul>
-                                <li><a href="#">Salud <span>(12)</span></a></li>
-                                <li><a href="#">Alimentación <span>(8)</span></a></li>
-                                <li><a href="#">Entrenamiento <span>(6)</span></a></li>
-                                <li><a href="#">Gatos <span>(5)</span></a></li>
-                                <li><a href="#">Perros <span>(10)</span></a></li>
-                                <li><a href="#">Mascotas Exóticas <span>(3)</span></a></li>
-                                <li><a href="#">Adopción <span>(4)</span></a></li>
+                                <li><a href="?categoria=Salud" class="categoria-enlace" data-categoria="Salud">Salud</a></li>
+                                <li><a href="?categoria=Alimentación" class="categoria-enlace" data-categoria="Alimentación">Alimentación</a></li>
+                                <li><a href="?categoria=Entrenamiento" class="categoria-enlace" data-categoria="Entrenamiento">Entrenamiento</a></li>
+                                <li><a href="?categoria=Gatos" class="categoria-enlace" data-categoria="Gatos">Gatos</a></li>
+                                <li><a href="?categoria=Perros" class="categoria-enlace" data-categoria="Perros">Perros</a></li>
+                                <li><a href="?categoria=Mascotas%20Exóticas" class="categoria-enlace" data-categoria="Mascotas Exóticas">Mascotas Exóticas</a></li>
+                                <li><a href="?categoria=Adopción" class="categoria-enlace" data-categoria="Adopción">Adopción</a></li>
                             </ul>
                         </div>
 
@@ -293,7 +309,7 @@ function obtenerIniciales($nombre) {
                             <div class="articulos-populares">
                                 <div class="articulo-popular">
                                     <div class="imagen-popular">
-                                        <img src="../img/popular1.jpg" alt="Artículo popular">
+                                        <img src="../img/popular1.jpg" alt="Artículo popular" loading="lazy" decoding="async" style="aspect-ratio: 16/9; width: 100%; height: auto; object-fit: cover;">
                                     </div>
                                     <div class="info-popular">
                                         <h4><a href="#">Los mejores juguetes para estimular a tu gato</a></h4>
@@ -303,7 +319,7 @@ function obtenerIniciales($nombre) {
 
                                 <div class="articulo-popular">
                                     <div class="imagen-popular">
-                                        <img src="../img/popular2.jpg" alt="Artículo popular">
+                                        <img src="../img/popular2.jpg" alt="Artículo popular" loading="lazy" decoding="async" style="aspect-ratio: 16/9; width: 100%; height: auto; object-fit: cover;">
                                     </div>
                                     <div class="info-popular">
                                         <h4><a href="#">Cómo prevenir la ansiedad por separación en perros</a></h4>
@@ -313,7 +329,7 @@ function obtenerIniciales($nombre) {
 
                                 <div class="articulo-popular">
                                     <div class="imagen-popular">
-                                        <img src="../img/popular3.jpg" alt="Artículo popular">
+                                        <img src="../img/popular3.jpg" alt="Artículo popular" loading="lazy" decoding="async" style="aspect-ratio: 16/9; width: 100%; height: auto; object-fit: cover;">
                                     </div>
                                     <div class="info-popular">
                                         <h4><a href="#">Beneficios de la esterilización en mascotas</a></h4>
@@ -345,7 +361,7 @@ function obtenerIniciales($nombre) {
                             <div class="widget widget-dashboard">
                                 <h3>Mi Mascota</h3>
                                 <!-- <p>Agenda citas para tus mascotas.</p> -->
-                                 <p>Porque su bienestar es primero: agenda su cita ahora.</p>
+                                <p>Porque su bienestar es primero: agenda su cita ahora.</p>
                                 <a href="../html/citas.html" class="boton-primario boton-completo" role="button">Ir a Citas</a>
                             </div>
                         <?php else : ?>
@@ -388,11 +404,11 @@ function obtenerIniciales($nombre) {
                     <ul>
                         <li><a href="../index.php">Inicio</a></li>
                         <?php if (!$loggedIn): ?>
-                        <li><a href="../index.php#nosotros">Nosotros</a></li>
+                            <li><a href="../index.php#nosotros">Nosotros</a></li>
                         <?php endif; ?>
                         <li><a href="contacto.php">Contacto</a></li>
                         <?php if ($loggedIn): ?>
-                        <li><a href="citas.html">Citas</a></li>
+                            <li><a href="citas.html">Citas</a></li>
                         <?php endif; ?>
                         <li><a href="blog.php">Blog</a></li>
                     </ul>
@@ -414,5 +430,119 @@ function obtenerIniciales($nombre) {
     </footer>
     <script src="../assets/js/profile-sync.js"></script>
     <script src="/Proyecto_Alaska/views/MenuView.js"></script>
-  </body>
+    <script>
+        (function() {
+            const articulos = Array.from(document.querySelectorAll('.articulo, .articulo-destacado'));
+            const enlacesCategorias = document.querySelectorAll('.widget-categorias .categoria-enlace');
+            const enlacesEtiquetas = document.querySelectorAll('.nube-etiquetas a');
+            const inputBusqueda = document.querySelector('.formulario-busqueda input');
+            let categoriaActual = '';
+            let queryActual = '';
+            let etiquetaActual = '';
+
+            function actualizarContadores() {
+                const conteos = {};
+                articulos.forEach(a => {
+                    const cat = (a.getAttribute('data-categoria') || '').trim();
+                    if (!cat) return;
+                    conteos[cat] = (conteos[cat] || 0) + 1;
+                });
+                enlacesCategorias.forEach(enlace => {
+                    const existente = enlace.querySelector('span');
+                    if (existente) existente.remove();
+                    const cat = enlace.dataset.categoria || '';
+                    const n = conteos[cat] || 0;
+                    if (n > 0) {
+                        const s = document.createElement('span');
+                        s.textContent = ` (${n})`;
+                        enlace.appendChild(s);
+                    }
+                });
+            }
+
+            function obtenerTextoArticulo(el) {
+                const titulo = (el.querySelector('h2, h3')?.textContent || '').toLowerCase();
+                const parrafo = (el.querySelector('p')?.textContent || '').toLowerCase();
+                return `${titulo} ${parrafo}`;
+            }
+
+            function aplicarFiltros() {
+                const q = queryActual.trim().toLowerCase();
+                let visibles = 0;
+                articulos.forEach(a => {
+                    const cat = (a.getAttribute('data-categoria') || '').trim();
+                    const coincideCategoria = !categoriaActual || cat === categoriaActual;
+                    const coincideBusqueda = !q || obtenerTextoArticulo(a).includes(q);
+                    const mostrar = coincideCategoria && coincideBusqueda;
+                    a.style.display = mostrar ? '' : 'none';
+                    if (mostrar) visibles++;
+                });
+                enlacesCategorias.forEach(e => e.classList.toggle('active', e.dataset.categoria === categoriaActual));
+                enlacesEtiquetas.forEach(e => e.classList.toggle('active', e.textContent.trim().toLowerCase() === (etiquetaActual || '').toLowerCase()));
+
+                // Mensaje de sin resultados
+                let noRes = document.querySelector('.no-results');
+                if (!noRes) {
+                    noRes = document.createElement('div');
+                    noRes.className = 'no-results';
+                    noRes.innerHTML = '<i class="fas fa-search"></i><p>No se encontraron artículos.</p>';
+                    const contenedor = document.querySelector('.articulos-blog');
+                    if (contenedor) contenedor.appendChild(noRes);
+                }
+                noRes.style.display = visibles === 0 ? '' : 'none';
+            }
+
+            // Inicializar contadores al cargar
+            actualizarContadores();
+
+            // Manejar clics en categorías (toggle)
+            enlacesCategorias.forEach(enlace => {
+                enlace.addEventListener('click', function(ev) {
+                    ev.preventDefault();
+                    const yaActiva = this.classList.contains('active');
+                    categoriaActual = yaActiva ? '' : (this.dataset.categoria || '');
+                    const url = new URL(window.location);
+                    if (categoriaActual) {
+                        url.searchParams.set('categoria', categoriaActual);
+                    } else {
+                        url.searchParams.delete('categoria');
+                    }
+                    window.history.pushState({}, '', url);
+                    aplicarFiltros();
+                });
+            });
+
+            // Buscar en tiempo real
+            if (inputBusqueda) {
+                inputBusqueda.addEventListener('input', function() {
+                    queryActual = this.value || '';
+                    // Si hay una etiqueta activa pero el texto ya no coincide, desactivarla
+                    if (etiquetaActual && queryActual.trim().toLowerCase() !== etiquetaActual.toLowerCase()) {
+                        etiquetaActual = '';
+                    }
+                    aplicarFiltros();
+                });
+            }
+
+            // Manejar clics en etiquetas (toggle y sincroniza con búsqueda)
+            enlacesEtiquetas.forEach(et => {
+                et.addEventListener('click', function(ev) {
+                    ev.preventDefault();
+                    const texto = (this.textContent || '').trim();
+                    const esMisma = etiquetaActual.toLowerCase() === texto.toLowerCase();
+                    etiquetaActual = esMisma ? '' : texto;
+                    queryActual = etiquetaActual;
+                    if (inputBusqueda) inputBusqueda.value = etiquetaActual;
+                    aplicarFiltros();
+                });
+            });
+
+            // Leer parámetro de URL para pre-filtrar
+            const params = new URLSearchParams(window.location.search);
+            categoriaActual = params.get('categoria') || '';
+            aplicarFiltros();
+        })();
+    </script>
+</body>
+
 </html>
