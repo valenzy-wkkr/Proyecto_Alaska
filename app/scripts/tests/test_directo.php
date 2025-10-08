@@ -1,9 +1,6 @@
 <?php
 // Test simple directo del controlador
-require_once __DIR__ . '/app/core/Autoloader.php';
-
-use App\Controllers\MascotasController;
-use App\Models\Pet;
+require_once __DIR__ . '/../../core/Autoloader.php';
 
 echo "<h2>Test Directo del Controlador</h2>";
 
@@ -14,7 +11,7 @@ $_SESSION['usuario_id'] = 1;
 // Test del modelo Pet
 echo "<h3>Test del modelo Pet:</h3>";
 try {
-    $pet = new Pet();
+    $pet = new \App\Models\Pet();
     $mascotas = $pet->allByUser(1);
     echo "<p>Mascotas encontradas: " . count($mascotas) . "</p>";
     
@@ -33,7 +30,7 @@ try {
     $_SERVER['REQUEST_METHOD'] = 'GET';
     
     ob_start();
-    $controller = new MascotasController();
+    $controller = new \App\Controllers\MascotasController();
     $controller->handle();
     $output = ob_get_clean();
     
@@ -65,7 +62,7 @@ if (isset($mascotas) && count($mascotas) > 0) {
         $_GET['id'] = $petId;
         
         ob_start();
-        $controller = new MascotasController();
+        $controller = new \App\Controllers\MascotasController();
         $controller->handle();
         $deleteOutput = ob_get_clean();
         

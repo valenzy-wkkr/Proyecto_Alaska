@@ -7,7 +7,7 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-require_once __DIR__ . '/app/core/Autoloader.php';
+require_once __DIR__ . '/../../core/Autoloader.php';
 use App\Models\Pet;
 
 $usuarioId = $_SESSION['usuario_id'];

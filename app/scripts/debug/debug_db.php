@@ -1,6 +1,6 @@
 <?php
 // Archivo temporal para verificar la base de datos
-require_once __DIR__ . '/app/core/Autoloader.php';
+require_once __DIR__ . '/../../core/Autoloader.php';
 
 use App\Core\Database;
 
@@ -8,7 +8,6 @@ try {
     $db = Database::getConnection();
     echo "<h2>Conexión a la base de datos exitosa</h2>";
     
-    // Verificar estructura de la tabla usuarios
     echo "<h3>Estructura de la tabla usuarios:</h3>";
     $result = $db->query("DESCRIBE usuarios");
     echo "<table border='1'>";

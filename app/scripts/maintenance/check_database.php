@@ -1,12 +1,11 @@
 <?php
-require_once __DIR__ . '/app/core/Autoloader.php';
+require_once __DIR__ . '/../../core/Autoloader.php';
 use App\Core\Database;
 
 try {
     $db = Database::getConnection();
     
     echo "<h2>Información de la base de datos</h2>";
-    
     // Mostrar tablas
     echo "<h3>Tablas en la base de datos 'alaska':</h3>";
     $result = $db->query("SHOW TABLES");

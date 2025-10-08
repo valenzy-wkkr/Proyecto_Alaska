@@ -1,7 +1,7 @@
 <?php
 // Script para agregar la columna foto_perfil a la tabla usuarios
 
-require_once __DIR__ . '/app/core/Autoloader.php';
+require_once __DIR__ . '/../../core/Autoloader.php';
 use App\Core\Database;
 
 try {
@@ -42,7 +42,7 @@ try {
     echo "</table>";
     
     echo "<p><strong>¡Actualización completada!</strong></p>";
-    echo "<p><a href='html/perfil.php'>Ir al perfil</a> | <a href='debug_session.php'>Debug sesión</a></p>";
+    echo "<p><a href='/Proyecto_Alaska/html/perfil.php'>Ir al Perfil</a> | <a href='/Proyecto_Alaska/app/scripts/debug/debug_session.php'>Debug sesión</a></p>";
     
 } catch (Exception $e) {
     echo "<p style='color: red;'>❌ Error: " . htmlspecialchars($e->getMessage()) . "</p>";

@@ -17,12 +17,10 @@ if (isset($_GET['test_id'])) {
     $_SERVER['REQUEST_METHOD'] = 'DELETE';
     $_GET['id'] = $testId;
     
-    require_once __DIR__ . '/app/core/Autoloader.php';
-    
-    use App\Controllers\MascotasController;
+    require_once __DIR__ . '/../../core/Autoloader.php';
     
     try {
-        $controller = new MascotasController();
+        $controller = new \App\Controllers\MascotasController();
         ob_start();
         $controller->handle();
         $output = ob_get_clean();
@@ -35,10 +33,9 @@ if (isset($_GET['test_id'])) {
     }
 } else {
     // Mostrar mascotas disponibles para test
-    require_once __DIR__ . '/app/core/Autoloader.php';
-    use App\Models\Pet;
+    require_once __DIR__ . '/../../core/Autoloader.php';
     
-    $petModel = new Pet();
+    $petModel = new \App\Models\Pet();
     $mascotas = $petModel->allByUser($_SESSION['usuario_id']);
     
     echo "<h3>Mascotas disponibles para test:</h3>";

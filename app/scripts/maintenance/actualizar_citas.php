@@ -1,6 +1,6 @@
 <?php
 // Script para actualizar la estructura de la tabla citas
-require_once __DIR__ . '/app/core/Autoloader.php';
+require_once __DIR__ . '/../../core/Autoloader.php';
 
 use App\Core\Database;
 
@@ -12,25 +12,25 @@ try {
     $result = $db->query("SHOW COLUMNS FROM citas LIKE 'mascota_id'");
     
     if ($result->num_rows == 0) {
-        echo "<p>🔧 Agregando columna mascota_id...</p>";
+        echo "<p> Agregando columna mascota_id...</p>";
         
         // Agregar la columna mascota_id
         $sql = "ALTER TABLE citas ADD COLUMN mascota_id INT NULL AFTER usuario_id";
         if ($db->query($sql)) {
-            echo "<p>✅ Columna mascota_id agregada exitosamente</p>";
+            echo "<p>Columna mascota_id agregada exitosamente</p>";
             
             // Agregar clave foránea
             $sql = "ALTER TABLE citas ADD FOREIGN KEY (mascota_id) REFERENCES mascotas(id) ON DELETE SET NULL";
             if ($db->query($sql)) {
-                echo "<p>✅ Clave foránea agregada exitosamente</p>";
+                echo "<p>Clave foránea agregada exitosamente</p>";
             } else {
-                echo "<p>⚠️ Error al agregar clave foránea: " . $db->error . "</p>";
+                echo "<p>Error al agregar clave foránea: " . $db->error . "</p>";
             }
         } else {
-            echo "<p>❌ Error al agregar columna: " . $db->error . "</p>";
+            echo "<p>Error al agregar columna: " . $db->error . "</p>";
         }
     } else {
-        echo "<p>✅ La columna mascota_id ya existe</p>";
+        echo "<p>La columna mascota_id ya existe</p>";
     }
     
     // Mostrar estructura actual

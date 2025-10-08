@@ -1,14 +1,13 @@
 <?php
 session_start();
 
-require_once __DIR__ . '/app/core/Autoloader.php';
+require_once __DIR__ . '/../../core/Autoloader.php';
 use App\Core\Database;
 
 echo "<h2>Información de la Sesión</h2>";
 echo "<pre>";
 print_r($_SESSION);
 echo "</pre>";
-
 if (isset($_SESSION['usuario_id'])) {
     echo "<h3>Intentando obtener datos del usuario...</h3>";
     
