@@ -129,8 +129,8 @@ function obtenerIniciales($nombre)
                     <?php if ($loggedIn): ?>
                         <li>
                             <a href="/Proyecto_Alaska/html/perfil.php" class="inicial-circulo" title="Perfil" aria-label="Perfil">
-                                <?php if (!empty($fotoPerfil) && file_exists(__DIR__ . '/../uploads/perfiles/' . $fotoPerfil)): ?>
-                                    <img src="/Proyecto_Alaska/uploads/perfiles/<?php echo htmlspecialchars($fotoPerfil); ?>" alt="Perfil" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                                <?php if (!empty($fotoPerfil)): ?>
+                                    <img src="/Proyecto_Alaska/public/api/usuario.php?action=profile_picture" alt="Perfil" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
                                 <?php else: ?>
                                     <?php echo obtenerIniciales($nombreUsuario); ?>
                                 <?php endif; ?>
@@ -541,6 +541,24 @@ function obtenerIniciales($nombre)
             const params = new URLSearchParams(window.location.search);
             categoriaActual = params.get('categoria') || '';
             aplicarFiltros();
+        })();
+    </script>
+    <script>
+        (function () {
+            try { if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; } } catch (e) {}
+            const key = 'scroll:' + location.pathname + location.search;
+            function save() {
+                const y = window.pageYOffset || document.documentElement.scrollTop || 0;
+                sessionStorage.setItem(key, String(y));
+            }
+            window.addEventListener('beforeunload', save);
+            document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') save(); });
+            window.addEventListener('DOMContentLoaded', function () {
+                const y = sessionStorage.getItem(key);
+                if (y !== null) {
+                    requestAnimationFrame(function(){ window.scrollTo(0, parseInt(y, 10) || 0); });
+                }
+            });
         })();
     </script>
 </body>

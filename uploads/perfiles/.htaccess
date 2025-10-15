@@ -1,0 +1,13 @@
+# Bloquear acceso directo a las imágenes de perfiles
+# Apache 2.4+
+<IfModule mod_authz_core.c>
+  Require all denied
+</IfModule>
+
+# Compatibilidad con Apache 2.2
+<IfModule !mod_authz_core.c>
+  Deny from all
+</IfModule>
+
+# Evitar listado de directorios
+Options -Indexes

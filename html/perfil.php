@@ -402,8 +402,8 @@ function traducirEstadoSalud($estado) {
           <div class="card-perfil" id="card-info-usuario">
             <div class="header-perfil">
               <div class="avatar" id="avatarInicial" onclick="abrirSelectorImagen()">
-                <?php if (!empty($userData['foto_perfil']) && file_exists('../uploads/perfiles/' . $userData['foto_perfil'])): ?>
-                  <img src="../uploads/perfiles/<?php echo htmlspecialchars($userData['foto_perfil']); ?>" alt="Foto de perfil" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                <?php if (!empty($userData['foto_perfil'])): ?>
+                  <img src="/Proyecto_Alaska/public/api/usuario.php?action=profile_picture" alt="Foto de perfil" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
                 <?php else: ?>
                   <?php echo obtenerIniciales($userData['nombre']); ?>
                 <?php endif; ?>
@@ -1094,8 +1094,8 @@ function traducirEstadoSalud($estado) {
           if (data.success) {
             mostrarNotificacion('Foto de perfil actualizada correctamente', 'success');
             
-            // Actualizar avatar en la página
-            const newImageUrl = '../uploads/perfiles/' + data.filename + '?v=' + Date.now();
+            // Actualizar avatar en la página usando endpoint protegido
+            const newImageUrl = '/Proyecto_Alaska/public/api/usuario.php?action=profile_picture&v=' + Date.now();
             document.getElementById('avatarInicial').innerHTML = `
               <img src="${newImageUrl}" alt="Foto de perfil" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
               <div class="avatar-overlay">

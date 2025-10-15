@@ -94,8 +94,8 @@
                 <li><a href="/Proyecto_Alaska/html/blog.php">Blog</a></li>
                 <li>
                   <a href="/Proyecto_Alaska/html/perfil.php" class="inicial-circulo" title="Perfil" aria-label="Perfil">
-                    <?php if (!empty($fotoPerfil) && file_exists(__DIR__ . '/../uploads/perfiles/' . $fotoPerfil)): ?>
-                      <img src="/Proyecto_Alaska/uploads/perfiles/<?php echo htmlspecialchars($fotoPerfil); ?>" alt="Perfil" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                    <?php if (!empty($fotoPerfil)): ?>
+                      <img src="/Proyecto_Alaska/public/api/usuario.php?action=profile_picture" alt="Perfil" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
                     <?php else: ?>
                       <?php echo obtenerIniciales($nombreUsuario); ?>
                     <?php endif; ?>
