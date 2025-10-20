@@ -602,9 +602,6 @@ function traducirEstadoSalud($estado) {
               <button data-tab="preferencias">
                 <i class="fas fa-gear"></i> Preferencias
               </button>
-              <button data-tab="notificaciones">
-                <i class="fas fa-bell"></i> Notificaciones
-              </button>
             </div>
             <div class="paneles">
               <div class="panel-ajuste activo" id="panel-perfil">
@@ -669,7 +666,7 @@ function traducirEstadoSalud($estado) {
                     <input id="inpRepiteClave" type="password" />
                   </div>
                   <button type="submit" class="btn-guardar">
-                    <i class="fas fa-lock"></i> Actualizar Clave
+                    <i class="fas fa-lock"></i> Guardar Cambios
                   </button>
                 </form>
               </div>
@@ -691,29 +688,6 @@ function traducirEstadoSalud($estado) {
                   </div>
                   <button type="submit" class="btn-guardar">
                     <i class="fas fa-palette"></i> Guardar Preferencias
-                  </button>
-                </form>
-              </div>
-              <div class="panel-ajuste" id="panel-notificaciones">
-                <form id="formNotificaciones">
-                  <div class="grupo-form-perfil">
-                    <label>Recordatorios</label>
-                    <select id="selRecordatorios">
-                      <option value="email">Email</option>
-                      <option value="app">In-App</option>
-                      <option value="ambos">Ambos</option>
-                    </select>
-                  </div>
-                  <div class="grupo-form-perfil">
-                    <label>Frecuencia Resumen</label>
-                    <select id="selFrecuencia">
-                      <option value="diario">Diario</option>
-                      <option value="semanal">Semanal</option>
-                      <option value="mensual">Mensual</option>
-                    </select>
-                  </div>
-                  <button type="submit" class="btn-guardar">
-                    <i class="fas fa-bell"></i> Guardar Notificaciones
                   </button>
                 </form>
               </div>
@@ -1402,11 +1376,6 @@ function traducirEstadoSalud($estado) {
         document.getElementById('formPreferencias').addEventListener('submit', (e) => {
           e.preventDefault();
           mostrarNotificacion('Preferencias guardadas', 'success');
-        });
-
-        document.getElementById('formNotificaciones').addEventListener('submit', (e) => {
-          e.preventDefault();
-          mostrarNotificacion('Notificaciones actualizadas', 'success');
         });
 
         // Botones de editar y eliminar mascotas
