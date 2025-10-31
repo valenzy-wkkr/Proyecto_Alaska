@@ -190,7 +190,7 @@
                     </section>
 
                     <!-- Actividad Reciente -->
-                    <section class="dashboard-section">
+                    <!-- <section class="dashboard-section">
                         <div class="section-header">
                             <h2><i class="fas fa-clock"></i> Actividad Reciente</h2>
                         </div>
@@ -203,7 +203,7 @@
                 </div>
             </div>
         </div>
-    </main>
+    </main> -->
 
     <!-- Modales -->
     <div class="modal" id="reminderModal">

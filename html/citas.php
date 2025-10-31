@@ -154,7 +154,6 @@ function obtenerIniciales($nombre) {
                 style="width: 100%; height: 100%; object-fit: contain"
               />
             </div>
-            <h1 class="nombre-empresa">Alaska</h1>
           </div>
         </div>
         <nav class="navegacion-principal">
