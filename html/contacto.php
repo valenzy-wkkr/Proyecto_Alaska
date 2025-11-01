@@ -94,7 +94,7 @@ function obtenerIniciales($nombre)
           <?php endif; ?>
           <li><a href="contacto.php" class="activo">Contacto</a></li>
           <?php if ($loggedIn): ?>
-            <li><a href="../html/citas.html">Citas</a></li>
+            <li><a href="../html/citas.php">Citas</a></li>
           <?php endif; ?>
           <li><a href="blog.php">Blog</a></li>
           <?php if (!$loggedIn): ?>

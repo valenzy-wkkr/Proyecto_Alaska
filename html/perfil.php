@@ -325,14 +325,24 @@ function traducirEstadoSalud($estado) {
         box-shadow: 0 0 0 2px rgba(64, 123, 255, 0.1);
       }
       
+      /* Flecha personalizada del select sin desbordar */
       #formNuevaMascota select {
-        background-image: url("data:image/svg+xml;charset=UTF-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'><path fill='%23666' d='M6 8L0 2h12z'/></svg>");
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
         background-repeat: no-repeat;
-        background-position: right 10px center;
-        background-size: 12px;
-        padding-right: 30px;
+        background-position: right 0.9rem center; /* asegura margen interno estable */
+        background-size: 14px 14px;
+        background-origin: padding-box; /* flecha dentro del borde/padding */
+        background-clip: padding-box;
+        padding-right: 2.4rem; /* espacio para la flecha */
+        overflow: hidden; /* evita desbordes en bordes redondeados */
+        box-sizing: border-box;
         cursor: pointer;
       }
+      /* Oculta la flecha nativa en IE/Edge heredado */
+      #formNuevaMascota select::-ms-expand { display: none; }
       
       #formNuevaMascota small {
         font-size: 12px;
@@ -361,6 +371,10 @@ function traducirEstadoSalud($estado) {
         background: #ccc;
         cursor: not-allowed;
       }
+
+                  /* Avatar: evitar deformación de la foto */
+            .avatar {width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--color-primario),var(--color-secundario));display:flex;align-items:center;justify-content:center;color:#fff;font-size:2rem;font-weight:600;box-shadow:0 4px 12px rgba(0,0,0,.15);overflow:hidden;}
+            .avatar img{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%;}
     </style>
   </head>
   <body>

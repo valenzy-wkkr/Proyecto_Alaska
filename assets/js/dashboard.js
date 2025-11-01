@@ -501,6 +501,7 @@ class Dashboard {
                         <i class="fas fa-heartbeat"></i>
                         ${healthStatusLabel}
                     </div>
+                    ${pet.healthNotes ? `<div class="pet-notes"><strong>Observaciones:</strong> ${pet.healthNotes}</div>` : ''}
                     <div class="pet-actions">
                         <button class="btn-inline btn-edit-pet" data-pet-id="${pet.id}">
                             <i class="fas fa-pen-to-square"></i> Editar
@@ -673,6 +674,7 @@ class Dashboard {
             const ageInput = document.getElementById('petAge');
             const weightInput = document.getElementById('petWeight');
             const healthSelect = document.getElementById('petHealthStatus');
+            const healthNotesInput = document.getElementById('petHealthNotes');
             const lastCheckupInput = document.getElementById('petLastCheckup');
 
             if (pet) {
@@ -684,12 +686,14 @@ class Dashboard {
                 if (ageInput) ageInput.value = pet.age ?? '';
                 if (weightInput) weightInput.value = pet.weight ?? '';
                 if (healthSelect) healthSelect.value = pet.healthStatus || 'healthy';
+                if (healthNotesInput) healthNotesInput.value = pet.healthNotes || '';
                 if (lastCheckupInput) lastCheckupInput.value = (pet.lastCheckup || '').slice(0, 10);
             } else {
                 if (titleEl) titleEl.textContent = 'Agregar Mascota';
                 form.reset();
                 if (idInput) idInput.value = '';
                 if (healthSelect) healthSelect.value = 'healthy';
+                if (healthNotesInput) healthNotesInput.value = '';
                 if (lastCheckupInput) lastCheckupInput.value = new Date().toISOString().split('T')[0];
             }
         }
@@ -878,6 +882,7 @@ class Dashboard {
             age: parseFloat(formData.get('age')) || 0,
             weight: parseFloat(formData.get('weight')) || 0,
             healthStatus: formData.get('healthStatus') || 'healthy',
+            healthNotes: formData.get('healthNotes') || '',
             lastCheckup: (formData.get('lastCheckup') || new Date().toISOString().split('T')[0])
         };
         const petId = parseInt(formData.get('id')) || null;
