@@ -349,7 +349,7 @@ function obtenerIniciales($nombre) {
       </div>
     </footer>
 
-    <script src="../assets/js/citas.js"></script>
+    <script src="/Proyecto_Alaska/assets/js/citas.js?v=<?php echo time(); ?>"></script>
     <script src="../views/MenuView.js"></script>
     <script src="../views/ButtonView.js"></script>
     <script src="../views/FormView.js"></script>

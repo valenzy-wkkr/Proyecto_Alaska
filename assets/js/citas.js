@@ -317,42 +317,109 @@ class CitasManager {
 
         const ventanaImpresion = window.open('', '_blank');
         const fecha = new Date(cita.fecha_cita);
-        
+        const mascota = cita.nombre_mascota ? `${cita.nombre_mascota} (${cita.tipo_mascota})` : `${cita.tipo_mascota}`;
+        const estadoTexto = this.obtenerTextoEstado(cita.estado);
+        const estadoClase = this.obtenerClaseEstado(cita.estado);
+
         ventanaImpresion.document.write(`
             <html>
                 <head>
-                    <title>Cita Veterinaria - ${cita.tipo_mascota}</title>
+                    <meta charset="utf-8" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1" />
+                    <title>Informe de Cita - ${mascota}</title>
                     <style>
-                        body { font-family: Arial, sans-serif; margin: 20px; }
-                        .header { text-align: center; border-bottom: 2px solid #1976d2; padding-bottom: 10px; }
-                        .info { margin: 20px 0; }
-                        .info h3 { color: #1976d2; }
-                        .info p { margin: 5px 0; }
+                        :root{ --primary:#1976d2; --text:#1f2a44; --muted:#6b7280; --border:#e5e7eb; }
+                        *{ box-sizing:border-box; }
+                        html,body{ height:100%; }
+                        body{ margin:0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color:var(--text); background:#f6f8fb; }
+                        .sheet{ width: 920px; max-width: 92%; margin: 32px auto; background:#fff; border:1px solid var(--border); border-radius:16px; box-shadow:0 10px 30px rgba(31,42,68,.08); overflow:hidden; }
+                        .header{ display:flex; align-items:center; gap:16px; padding:28px 32px; border-bottom:3px solid var(--primary); background: linear-gradient(180deg, rgba(25,118,210,0.06), rgba(25,118,210,0)); }
+                        .brand{ width:56px; height:56px; border-radius:14px; background:#fff; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; overflow:hidden; }
+                        .brand img{ width:100%; height:100%; object-fit:contain; border-radius:inherit; }
+                        .titles h1{ margin:0; font-size:20px; letter-spacing:.5px; }
+                        .titles p{ margin:2px 0 0; color:var(--muted); font-size:12px; }
+
+                        .section{ padding:22px 32px; }
+                        .section h2{ margin:0 0 12px; font-size:14px; color:var(--primary); text-transform:uppercase; letter-spacing:.1em; }
+
+                        .info-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:14px 24px; }
+                        .info-item{ display:flex; gap:8px; align-items:baseline; }
+                        .label{ width:140px; min-width:140px; color:var(--muted); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.06em; }
+                        .value{ color:var(--text); font-size:14px; }
+
+                        .status{ display:inline-flex; align-items:center; gap:8px; font-weight:600; font-size:12px; padding:6px 10px; border-radius:999px; border:1px solid var(--border); }
+                        .status.pendiente{ color:#b45309; background:#fff7ed; border-color:#fed7aa; }
+                        .status.completada{ color:#166534; background:#ecfdf5; border-color:#bbf7d0; }
+                        .status.cancelada{ color:#991b1b; background:#fef2f2; border-color:#fecaca; }
+
+                        .notes{ margin-top:8px; padding:14px; border:1px dashed var(--border); border-radius:10px; background:#fafbff; }
+                        .notes h3{ margin:0 0 8px; font-size:13px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; }
+                        .notes p{ margin:0; line-height:1.6; font-size:14px; }
+
+                        .footer{ display:flex; justify-content:space-between; gap:24px; padding:24px 32px 32px; }
+                        .sign{ flex:1; text-align:center; }
+                        .line{ margin-top:54px; border-top:1px solid var(--border); padding-top:6px; color:var(--muted); font-size:12px; }
+                        .meta{ text-align:right; color:var(--muted); font-size:12px; }
+
+                        @media print{
+                            body{ background:#fff; }
+                            .sheet{ width:auto; max-width:100%; margin:0; border:none; box-shadow:none; border-radius:0; }
+                            .header{ border-bottom:2px solid var(--primary); }
+                            .notes{ background:#fff; }
+                            .footer{ padding-bottom:8px; }
+                        }
                     </style>
                 </head>
                 <body>
-                    <div class="header">
-                        <h1>ALASKA - Clínica Veterinaria</h1>
-                        <h2>Informe de Cita</h2>
+                    <div class="sheet">
+                        <header class="header">
+                            <div class="brand"><img src="/Proyecto_Alaska/img/alaska.png" alt="Logo Alaska" /></div>
+                            <div class="titles">
+                                <h1>ALASKA - Clínica Veterinaria</h1>
+                                <p>Informe de Cita • ${new Date().toLocaleDateString('es-ES')}</p>
+                            </div>
+                        </header>
+
+                        <section class="section">
+                            <h2>Resumen</h2>
+                            <div class="info-grid">
+                                <div class="info-item"><div class="label">Fecha</div><div class="value">${fecha.toLocaleDateString('es-ES')}</div></div>
+                                <div class="info-item"><div class="label">Hora</div><div class="value">${fecha.toLocaleTimeString('es-ES', {hour:'2-digit', minute:'2-digit'})}</div></div>
+                                <div class="info-item"><div class="label">Mascota</div><div class="value">${mascota}</div></div>
+                                <div class="info-item"><div class="label">Estado</div><div class="value"><span class="status ${estadoClase}">${estadoTexto}</span></div></div>
+                                <div class="info-item"><div class="label">Motivo</div><div class="value">${cita.motivo || '-'}</div></div>
+                                ${cita.veterinario ? `<div class="info-item"><div class="label">Veterinario</div><div class="value">${cita.veterinario}</div></div>` : ''}
+                                ${cita.diagnostico ? `<div class="info-item"><div class="label">Diagnóstico</div><div class="value">${cita.diagnostico}</div></div>` : ''}
+                                ${cita.tratamiento ? `<div class="info-item"><div class="label">Tratamiento</div><div class="value">${cita.tratamiento}</div></div>` : ''}
+                            </div>
+
+                            ${cita.notas ? `
+                                <div class="notes">
+                                    <h3>Notas adicionales</h3>
+                                    <p>${cita.notas}</p>
+                                </div>
+                            ` : ''}
+                        </section>
+
+                        <footer class="footer">
+                            <div class="sign">
+                                <div class="line">Firma del Veterinario</div>
+                            </div>
+                            <div class="meta">
+                                Generado por Alaska • ${new Date().toLocaleString('es-ES')}
+                            </div>
+                        </footer>
                     </div>
-                    <div class="info">
-                        <h3>Información de la Cita</h3>
-                        <p><strong>Fecha:</strong> ${fecha.toLocaleDateString('es-ES')}</p>
-                        <p><strong>Hora:</strong> ${fecha.toLocaleTimeString('es-ES')}</p>
-                        <p><strong>Mascota:</strong> ${cita.tipo_mascota}</p>
-                        <p><strong>Motivo:</strong> ${cita.motivo}</p>
-                        <p><strong>Estado:</strong> ${cita.estado}</p>
-                        ${cita.diagnostico ? `<p><strong>Diagnóstico:</strong> ${cita.diagnostico}</p>` : ''}
-                        ${cita.tratamiento ? `<p><strong>Tratamiento:</strong> ${cita.tratamiento}</p>` : ''}
-                        ${cita.veterinario ? `<p><strong>Veterinario:</strong> ${cita.veterinario}</p>` : ''}
-                        ${cita.notas ? `<p><strong>Notas:</strong> ${cita.notas}</p>` : ''}
-                    </div>
+                    <script>
+                        window.addEventListener('load', function(){
+                            setTimeout(function(){ window.print(); window.close(); }, 300);
+                        });
+                    <\/script>
                 </body>
             </html>
         `);
-        
+
         ventanaImpresion.document.close();
-        ventanaImpresion.print();
     }
 
     exportarHistorial() {
