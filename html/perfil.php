@@ -216,6 +216,32 @@ function traducirEstadoSalud($estado) {
       type="image/x-icon"
     />
     <link rel="stylesheet" href="../assets/css/perfil.css" />
+    <style>
+      /* Fuente del placeholder de Observaciones */
+      #inpObservacionesSalud::placeholder {
+        font-family: 'Poppins', 'Montserrat', Arial, sans-serif;
+        font-size: 14px;
+        color: #888;
+        opacity: 1;
+      }
+      /* Compatibilidad WebKit y MS */
+      #inpObservacionesSalud::-webkit-input-placeholder {
+        font-family: 'Poppins', 'Montserrat', Arial, sans-serif;
+        font-size: 14px;
+        color: #888;
+        opacity: 1;
+      }
+      #inpObservacionesSalud:-ms-input-placeholder {
+        font-family: 'Poppins', 'Montserrat', Arial, sans-serif;
+        font-size: 14px;
+        color: #888;
+        opacity: 1;
+      }
+      /* Asegurar misma fuente en el textarea */
+      #inpObservacionesSalud {
+        font-family: 'Poppins', 'Montserrat', Arial, sans-serif;
+      }
+    </style>
   </head>
   <body>
     <header class="cabecera-principal">
@@ -695,6 +721,18 @@ function traducirEstadoSalud($estado) {
                 <option value="Recuperándose">Recuperándose</option>
               </select>
             </div>
+            <!-- Nuevo campo Observaciones (opcional) -->
+            <div>
+              <label for="inpObservacionesSalud" style="display: block; margin-bottom: 5px; font-weight: 600;">Observaciones (opcional)</label>
+              <textarea
+                id="inpObservacionesSalud"
+                rows="3"
+                maxlength="300"
+                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; resize: vertical;"
+                placeholder="Ej.: Tos ocasional, seguimiento con veterinario, alergias, etc."
+              ></textarea>
+              <small style="color: #666; font-size: 12px;">Máx. 300 caracteres</small>
+            </div>
           </div>
           
           <div style="margin-bottom: 20px;">
@@ -1101,6 +1139,11 @@ function traducirEstadoSalud($estado) {
         document.getElementById('inpPeso').value = mascota.weight || '';
         document.getElementById('selEstadoSalud').value = mascota.healthStatus || 'healthy';
         document.getElementById('inpUltimaRevision').value = mascota.lastCheckup ? mascota.lastCheckup.split(' ')[0] : '';
+        // Prellenar observaciones si existen
+        const obsInput = document.getElementById('inpObservacionesSalud');
+        if (obsInput) {
+          obsInput.value = mascota.healthNotes || mascota.observacionesSalud || mascota.observaciones || '';
+        }
 
         // Cambiar el título del modal
         document.getElementById('tituloModalMascota').innerHTML = '<i class="fas fa-pen"></i> Editar Mascota';
@@ -1371,7 +1414,9 @@ function traducirEstadoSalud($estado) {
             age: parseFloat(document.getElementById('inpEdad').value) || 0,
             weight: parseFloat(document.getElementById('inpPeso').value) || 0,
             healthStatus: document.getElementById('selEstadoSalud').value,
-            lastCheckup: document.getElementById('inpUltimaRevision').value || new Date().toISOString().split('T')[0]
+            lastCheckup: document.getElementById('inpUltimaRevision').value || new Date().toISOString().split('T')[0],
+            // Nuevo campo para observaciones de salud
+            healthNotes: (document.getElementById('inpObservacionesSalud').value || '').trim()
           };
           
           // Validaciones básicas

@@ -754,6 +754,7 @@ class Dashboard {
         const weightInput = document.getElementById('inpPeso');
         const healthSelect = document.getElementById('selEstadoSalud');
         const lastCheckupInput = document.getElementById('inpUltimaRevision');
+        const notesInput = document.getElementById('inpObservacionesSalud');
 
         if (pet) {
             if (titleEl) titleEl.textContent = 'Editar Mascota';
@@ -780,6 +781,8 @@ class Dashboard {
             if (weightInput) weightInput.value = pet.weight ?? '';
             if (healthSelect) healthSelect.value = pet.healthStatus || 'healthy';
             if (lastCheckupInput) lastCheckupInput.value = (pet.lastCheckup || '').slice(0, 10);
+            // Nuevo: observaciones
+            if (notesInput) notesInput.value = pet.healthNotes || '';
         } else {
             if (titleEl) titleEl.textContent = 'Agregar Mascota';
             form.reset();
@@ -788,6 +791,8 @@ class Dashboard {
             if (healthSelect) healthSelect.value = 'healthy';
             if (breedOther) { breedOther.style.display = 'none'; breedOther.value=''; }
             if (lastCheckupInput) lastCheckupInput.value = new Date().toISOString().split('T')[0];
+            // Nuevo: limpiar observaciones
+            if (notesInput) notesInput.value = '';
         }
     }
 
@@ -980,8 +985,9 @@ class Dashboard {
         const weight = parseFloat(document.getElementById('inpPeso')?.value || '0') || 0;
         const healthStatus = document.getElementById('selEstadoSalud')?.value || 'healthy';
         const lastCheckup = document.getElementById('inpUltimaRevision')?.value || new Date().toISOString().split('T')[0];
+        const healthNotes = (document.getElementById('inpObservacionesSalud')?.value || '').trim();
 
-        const pet = { name, species, breed: breed || 'No especificada', age, weight, healthStatus, healthNotes: '', lastCheckup };
+        const pet = { name, species, breed: breed || 'No especificada', age, weight, healthStatus, healthNotes, lastCheckup };
         const petId = idInput && idInput.value ? parseInt(idInput.value) : null;
 
         try {
