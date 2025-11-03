@@ -216,166 +216,6 @@ function traducirEstadoSalud($estado) {
       type="image/x-icon"
     />
     <link rel="stylesheet" href="../assets/css/perfil.css" />
-    <style>
-      .contenedor-imagen-logo {
-        width: 80px;
-        height: 80px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 50%;
-        overflow: hidden;
-        background-color: white;
-        padding: 2px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        transition: var(--transicion);
-      }
-      
-      .avatar {
-        position: relative;
-        cursor: pointer;
-        overflow: hidden;
-      }
-      
-      .avatar:hover .avatar-overlay {
-        opacity: 1;
-      }
-      
-      .avatar-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.7);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        border-radius: 50%;
-        color: white;
-        font-size: 1.2rem;
-      }
-      
-      #inputFotoPerfil {
-        display: none;
-      }
-      
-      .modal-foto {
-        display: none;
-        position: fixed;
-        z-index: 10000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-        animation: fadeIn 0.3s ease;
-      }
-      
-      .modal-foto-content {
-        background-color: white;
-        margin: 5% auto;
-        padding: 20px;
-        border-radius: 12px;
-        width: 90%;
-        max-width: 500px;
-        position: relative;
-      }
-      
-      .preview-container {
-        text-align: center;
-        margin: 20px 0;
-      }
-      
-      .preview-image {
-        max-width: 200px;
-        max-height: 200px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 3px solid var(--color-primario);
-      }
-      
-      .upload-area {
-        border: 2px dashed var(--color-borde);
-        border-radius: 8px;
-        padding: 20px;
-        text-align: center;
-        margin: 15px 0;
-        cursor: pointer;
-        transition: all 0.3s ease;
-      }
-      
-      .upload-area:hover {
-        border-color: var(--color-primario);
-        background-color: var(--fondo-claro);
-      }
-      
-      .upload-area.dragover {
-        border-color: var(--color-primario);
-        background-color: var(--color-primario-claro);
-      }
-      
-      /* Estilos para formulario de mascotas */
-      #formNuevaMascota input:focus,
-      #formNuevaMascota select:focus {
-        outline: none;
-        border-color: var(--color-primario);
-        box-shadow: 0 0 0 2px rgba(64, 123, 255, 0.1);
-      }
-      
-      /* Flecha personalizada del select sin desbordar */
-      #formNuevaMascota select {
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 0.9rem center; /* asegura margen interno estable */
-        background-size: 14px 14px;
-        background-origin: padding-box; /* flecha dentro del borde/padding */
-        background-clip: padding-box;
-        padding-right: 2.4rem; /* espacio para la flecha */
-        overflow: hidden; /* evita desbordes en bordes redondeados */
-        box-sizing: border-box;
-        cursor: pointer;
-      }
-      /* Oculta la flecha nativa en IE/Edge heredado */
-      #formNuevaMascota select::-ms-expand { display: none; }
-      
-      #formNuevaMascota small {
-        font-size: 12px;
-        color: #666;
-        margin-top: 4px;
-        display: block;
-      }
-      
-      .btn-guardar {
-        background: var(--color-primario);
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 6px;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-      }
-      
-      .btn-guardar:hover {
-        background: #5a6fd8;
-      }
-      
-      .btn-guardar:disabled {
-        background: #ccc;
-        cursor: not-allowed;
-      }
-
-                  /* Avatar: evitar deformación de la foto */
-            .avatar {width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--color-primario),var(--color-secundario));display:flex;align-items:center;justify-content:center;color:#fff;font-size:2rem;font-weight:600;box-shadow:0 4px 12px rgba(0,0,0,.15);overflow:hidden;}
-            .avatar img{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%;}
-    </style>
   </head>
   <body>
     <header class="cabecera-principal">
@@ -396,13 +236,36 @@ function traducirEstadoSalud($estado) {
             <li><a href="contacto.php">Contacto</a></li>
             <li><a href="citas.php">Citas</a></li>
             <li><a href="blog.php">Blog</a></li>
-            <li>
-              <a
-                href="/Proyecto_Alaska/public/api/auth/logout.php"
-                class="boton-nav"
-                id="btnCerrarSesion"
-                >Cerrar Sesión</a
-              >
+            <li class="menu-usuario">
+              <div class="perfil-nav-container">
+                <div class="perfil-avatar" id="perfilNavAvatar">
+                  <?php if (!empty($userData['foto_perfil'])): ?>
+                    <img src="/Proyecto_Alaska/public/api/usuario.php?action=profile_picture" alt="Foto de perfil" class="avatar-nav-img">
+                  <?php else: ?>
+                    <div class="inicial-circulo">
+                      <?php echo obtenerIniciales($userData['nombre']); ?>
+                    </div>
+                  <?php endif; ?>
+                  <i class="fas fa-chevron-down arrow-down"></i>
+                </div>
+                <div class="menu-desplegable" id="menuDesplegable">
+                  <div class="info-usuario-menu">
+                    <strong><?php echo htmlspecialchars($userData['nombre']); ?></strong>
+                    <small><?php echo htmlspecialchars($userData['correo']); ?></small>
+                  </div>
+                  <div class="separador-menu"></div>
+                  <a href="perfil.php" class="opcion-menu">
+                    <i class="fas fa-user"></i> Mi Perfil
+                  </a>
+                  <a href="../public/dashboard.php" class="opcion-menu">
+                    <i class="fas fa-tachometer-alt"></i> Inicio
+                  </a>
+                  <div class="separador-menu"></div>
+                  <a href="/Proyecto_Alaska/public/api/auth/logout.php" class="opcion-menu logout">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                  </a>
+                </div>
+              </div>
             </li>
           </ul>
         </nav>
@@ -606,15 +469,22 @@ function traducirEstadoSalud($estado) {
                 <i class="fas fa-sliders"></i> Ajustes
               </h2>
             </div>
+            <!-- Modo claro / oscuro (UI no funcional) -->
+            <div class="theme-mode-inline" title="Cambia el tema (próximamente)">
+              <i class="fas fa-sun" aria-hidden="true"></i>
+              <label class="switch" aria-label="Interruptor de tema">
+                <input type="checkbox" id="toggleTema">
+                <span class="slider"></span>
+              </label>
+              <i class="fas fa-moon" aria-hidden="true"></i>
+              <small>Modo claro / modo oscuro</small>
+            </div>
             <div class="tabs" id="tabsAjustes">
               <button data-tab="perfil" class="activo">
                 <i class="fas fa-user"></i> Perfil
               </button>
               <button data-tab="seguridad">
                 <i class="fas fa-shield"></i> Seguridad
-              </button>
-              <button data-tab="preferencias">
-                <i class="fas fa-gear"></i> Preferencias
               </button>
             </div>
             <div class="paneles">
@@ -681,27 +551,6 @@ function traducirEstadoSalud($estado) {
                   </div>
                   <button type="submit" class="btn-guardar">
                     <i class="fas fa-lock"></i> Guardar Cambios
-                  </button>
-                </form>
-              </div>
-              <div class="panel-ajuste" id="panel-preferencias">
-                <form id="formPreferencias">
-                  <div class="grupo-form-perfil">
-                    <label for="selIdioma">Idioma</label>
-                    <select id="selIdioma">
-                      <option value="es">Español</option>
-                      <option value="en">Inglés</option>
-                    </select>
-                  </div>
-                  <div class="grupo-form-perfil">
-                    <label for="selTema">Tema</label>
-                    <select id="selTema">
-                      <option value="claro">Claro</option>
-                      <option value="oscuro">Oscuro</option>
-                    </select>
-                  </div>
-                  <button type="submit" class="btn-guardar">
-                    <i class="fas fa-palette"></i> Guardar Preferencias
                   </button>
                 </form>
               </div>
@@ -788,12 +637,19 @@ function traducirEstadoSalud($estado) {
             </div>
             
             <div>
-              <label for="inpRaza" style="display: block; margin-bottom: 5px; font-weight: 600;">Raza</label>
-              <input 
-                type="text" 
-                id="inpRaza" 
+              <label for="selRaza" style="display: block; margin-bottom: 5px; font-weight: 600;">Raza</label>
+              <select 
+                id="selRaza"
                 style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;"
-                placeholder="Ej: Labrador, Siamés, Mestizo"
+                disabled
+              >
+                <option value="">Selecciona primero la especie</option>
+              </select>
+              <input 
+                type="text"
+                id="inpRazaOtro"
+                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; margin-top: 8px; display: none;"
+                placeholder="Especifica la raza"
               >
             </div>
             
@@ -1134,10 +990,53 @@ function traducirEstadoSalud($estado) {
           });
         }
         
+        // Actualizar también el avatar de navegación específico
+        const avatarNav = document.querySelector('.avatar-nav-img');
+        const inicialCirculo = document.querySelector('#perfilNavAvatar .inicial-circulo');
+        
+        if (avatarNav) {
+          avatarNav.src = imageUrl + '?v=' + Date.now();
+        } else if (inicialCirculo) {
+          // Reemplazar el círculo con iniciales por una imagen
+          inicialCirculo.innerHTML = `<img src="${imageUrl}?v=${Date.now()}" alt="Foto de perfil" class="avatar-nav-img">`;
+        }
+        
         console.log('Foto actualizada:', imageUrl);
       }
 
       // Funciones para manejo de mascotas
+      const speciesBreeds = {
+        'Perro': ['Labrador Retriever','Pastor Alemán','Golden Retriever','Poodle','Chihuahua','Bulldog','Beagle','Mestizo','Otra'],
+        'Gato': ['Siamés','Persa','Maine Coon','Bengalí','Sphynx','Angora','Mestizo','Otra'],
+        'Ave': ['Canario','Periquito','Cacatúa','Agapornis','Loro','Otra'],
+        'Pez': ['Betta','Guppy','Goldfish','Cíclido','Molly','Otra'],
+        'Reptil': ['Iguana','Gecko','Tortuga','Serpiente','Camaleón','Otra'],
+        'Roedor': ['Hámster','Cobaya','Conejo','Chinchilla','Rata','Otra'],
+        'Otro': ['Mestizo','Otra']
+      };
+
+      function poblarRazas() {
+        const selEspecie = document.getElementById('selEspecie');
+        const selRaza = document.getElementById('selRaza');
+        const inpRazaOtro = document.getElementById('inpRazaOtro');
+        if (!selRaza || !selEspecie) return;
+        const especie = selEspecie.value;
+        selRaza.innerHTML = '';
+        inpRazaOtro && (inpRazaOtro.style.display = 'none', inpRazaOtro.value = '');
+        if (!especie) {
+          selRaza.disabled = true;
+          const opt = document.createElement('option');
+          opt.value = '';
+          opt.textContent = 'Selecciona primero la especie';
+          selRaza.appendChild(opt);
+          return;
+        }
+        const lista = speciesBreeds[especie] || ['Mestizo','Otra'];
+        selRaza.disabled = false;
+        selRaza.appendChild(new Option('Selecciona una raza',''));
+        lista.forEach(r => selRaza.appendChild(new Option(r, r)));
+      }
+
       function abrirModalMascota() {
         // Limpiar formulario para nueva mascota
         document.getElementById('formNuevaMascota').reset();
@@ -1147,6 +1046,8 @@ function traducirEstadoSalud($estado) {
         document.getElementById('modalNuevaMascota').style.display = 'block';
         // Establecer fecha de hoy como valor por defecto para última revisión
         document.getElementById('inpUltimaRevision').value = new Date().toISOString().split('T')[0];
+        // Reset de razas
+        poblarRazas();
       }
 
       function cerrarModalMascota() {
@@ -1170,7 +1071,32 @@ function traducirEstadoSalud($estado) {
         document.getElementById('inpIdMascota').value = mascota.id;
         document.getElementById('inpNombreMascota').value = mascota.name || '';
         document.getElementById('selEspecie').value = mascota.species || '';
-        document.getElementById('inpRaza').value = mascota.breed || '';
+        // Actualizar listado de razas y seleccionar la correspondiente
+        if (typeof poblarRazas === 'function') {
+          poblarRazas();
+        }
+        const selRaza = document.getElementById('selRaza');
+        const inpRazaOtro = document.getElementById('inpRazaOtro');
+        const breedValue = mascota.breed || '';
+        if (selRaza) {
+          if (breedValue) {
+            const exists = Array.from(selRaza.options).some(opt => opt.value === breedValue);
+            if (exists) {
+              selRaza.value = breedValue;
+              if (inpRazaOtro) { inpRazaOtro.style.display = 'none'; inpRazaOtro.value = ''; }
+            } else {
+              // Asegurar opción 'Otra'
+              if (!Array.from(selRaza.options).some(opt => opt.value === 'Otra')) {
+                const optOtra = document.createElement('option');
+                optOtra.value = 'Otra';
+                optOtra.textContent = 'Otra';
+                selRaza.appendChild(optOtra);
+              }
+              selRaza.value = 'Otra';
+              if (inpRazaOtro) { inpRazaOtro.style.display = 'block'; inpRazaOtro.value = breedValue; }
+            }
+          }
+        }
         document.getElementById('inpEdad').value = mascota.age || '';
         document.getElementById('inpPeso').value = mascota.weight || '';
         document.getElementById('selEstadoSalud').value = mascota.healthStatus || 'healthy';
@@ -1297,8 +1223,86 @@ function traducirEstadoSalud($estado) {
         }
       });
 
+      // Función para inicializar el menú desplegable de usuario
+      function initMenuUsuario() {
+        const perfilAvatar = document.getElementById('perfilNavAvatar');
+        const menuDesplegable = document.getElementById('menuDesplegable');
+        
+        if (!perfilAvatar || !menuDesplegable) return;
+        
+        // Alternar menú al hacer clic en el avatar
+        perfilAvatar.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isOpen = menuDesplegable.classList.contains('show');
+          
+          if (isOpen) {
+            cerrarMenuUsuario();
+          } else {
+            abrirMenuUsuario();
+          }
+        });
+        
+        // Cerrar menú al hacer clic fuera
+        document.addEventListener('click', (e) => {
+          if (!perfilAvatar.contains(e.target) && !menuDesplegable.contains(e.target)) {
+            cerrarMenuUsuario();
+          }
+        });
+        
+        // Cerrar menú con tecla Escape
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            cerrarMenuUsuario();
+          }
+        });
+      }
+      
+      function abrirMenuUsuario() {
+        const perfilAvatar = document.getElementById('perfilNavAvatar');
+        const menuDesplegable = document.getElementById('menuDesplegable');
+        
+        perfilAvatar.classList.add('active');
+        menuDesplegable.classList.add('show');
+      }
+      
+      function cerrarMenuUsuario() {
+        const perfilAvatar = document.getElementById('perfilNavAvatar');
+        const menuDesplegable = document.getElementById('menuDesplegable');
+        
+        perfilAvatar.classList.remove('active');
+        menuDesplegable.classList.remove('show');
+      }
+
       document.addEventListener("DOMContentLoaded", () => {
         initTabs();
+        
+        // Inicializar menú desplegable de usuario
+        initMenuUsuario();
+        
+        // Inicializar razas y listeners de especie/raza
+        if (typeof poblarRazas === 'function') {
+          poblarRazas();
+        }
+        const selEspecie = document.getElementById('selEspecie');
+        const selRaza = document.getElementById('selRaza');
+        const inpRazaOtro = document.getElementById('inpRazaOtro');
+        if (selEspecie) {
+          selEspecie.addEventListener('change', () => {
+            poblarRazas();
+          });
+        }
+        if (selRaza) {
+          selRaza.addEventListener('change', () => {
+            if (!inpRazaOtro) return;
+            if (selRaza.value === 'Otra') {
+              inpRazaOtro.style.display = 'block';
+              inpRazaOtro.focus();
+            } else {
+              inpRazaOtro.style.display = 'none';
+              inpRazaOtro.value = '';
+            }
+          });
+        }
         
         // Manejar envío de formulario de perfil
         document.getElementById('formPerfil').addEventListener('submit', (e) => {
@@ -1356,11 +1360,14 @@ function traducirEstadoSalud($estado) {
         document.getElementById('formNuevaMascota').addEventListener('submit', (e) => {
           e.preventDefault();
           
+          const selRaza = document.getElementById('selRaza');
+          const inpRazaOtro = document.getElementById('inpRazaOtro');
+          const breedValue = selRaza && selRaza.value === 'Otra' ? (inpRazaOtro.value || '').trim() : (selRaza ? selRaza.value : '').trim();
           const formData = {
             action: 'create',
             name: document.getElementById('inpNombreMascota').value.trim(),
             species: document.getElementById('selEspecie').value,
-            breed: document.getElementById('inpRaza').value.trim() || 'No especificada',
+            breed: breedValue || 'No especificada',
             age: parseFloat(document.getElementById('inpEdad').value) || 0,
             weight: parseFloat(document.getElementById('inpPeso').value) || 0,
             healthStatus: document.getElementById('selEstadoSalud').value,
@@ -1386,11 +1393,7 @@ function traducirEstadoSalud($estado) {
           guardarMascota(formData);
         });
 
-        // Event listeners para formularios de preferencias y notificaciones
-        document.getElementById('formPreferencias').addEventListener('submit', (e) => {
-          e.preventDefault();
-          mostrarNotificacion('Preferencias guardadas', 'success');
-        });
+        // Event listener de preferencias eliminado (sección removida)
 
         // Botones de editar y eliminar mascotas
         document.addEventListener('click', (e) => {

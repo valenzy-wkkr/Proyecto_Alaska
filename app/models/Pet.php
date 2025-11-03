@@ -18,6 +18,9 @@ class Pet
     {
         $sql = "SELECT * FROM mascotas WHERE usuario_id = ? ORDER BY fecha_creacion DESC";
         $stmt = $this->db->prepare($sql);
+        if (!$stmt) {
+            throw new Exception('Error preparando INSERT mascota: ' . $this->db->error);
+        }
         $stmt->bind_param('i', $usuarioId);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -31,7 +34,8 @@ class Pet
                 'age' => (float)$row['edad'],
                 'weight' => (float)$row['peso'],
                 'healthStatus' => $row['estado_salud'],
-                'healthNotes' => $row['observaciones_salud'] ?? '',
+                // La columna observaciones_salud no existe en el esquema actual
+                'healthNotes' => '',
                 'lastCheckup' => $row['ultima_revision'],
             ];
         }
@@ -40,18 +44,21 @@ class Pet
 
     public function create(int $usuarioId, array $data): array|false
     {
-        $sql = "INSERT INTO mascotas (usuario_id, nombre, especie, raza, edad, peso, estado_salud, observaciones_salud, ultima_revision)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        // Ajustado al esquema actual (sin columna observaciones_salud)
+        $sql = "INSERT INTO mascotas (usuario_id, nombre, especie, raza, edad, peso, estado_salud, ultima_revision)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
+        if (!$stmt) {
+            throw new Exception('Error preparando UPDATE mascota: ' . $this->db->error);
+        }
         $edad = (float)($data['age'] ?? 0);
         $peso = (float)($data['weight'] ?? 0);
         $nombre = $data['name'] ?? '';
         $especie = $data['species'] ?? '';
         $raza = $data['breed'] ?? '';
         $estado = $data['healthStatus'] ?? 'healthy';
-        $observaciones = $data['healthNotes'] ?? '';
         $ultima = $data['lastCheckup'] ?? date('Y-m-d');
-        $stmt->bind_param('isssddsss', $usuarioId, $nombre, $especie, $raza, $edad, $peso, $estado, $observaciones, $ultima);
+        $stmt->bind_param('isssddss', $usuarioId, $nombre, $especie, $raza, $edad, $peso, $estado, $ultima);
         if ($stmt->execute()) {
             return [
                 'id' => $this->db->insert_id,
@@ -61,7 +68,7 @@ class Pet
                 'age' => $edad,
                 'weight' => $peso,
                 'healthStatus' => $estado,
-                'healthNotes' => $observaciones,
+                'healthNotes' => '',
                 'lastCheckup' => $ultima,
             ];
         }
@@ -70,7 +77,8 @@ class Pet
 
     public function update(int $usuarioId, int $id, array $data): bool
     {
-        $sql = "UPDATE mascotas SET nombre = ?, especie = ?, raza = ?, edad = ?, peso = ?, estado_salud = ?, observaciones_salud = ?, ultima_revision = ?
+        // Ajustado al esquema actual (sin columna observaciones_salud)
+        $sql = "UPDATE mascotas SET nombre = ?, especie = ?, raza = ?, edad = ?, peso = ?, estado_salud = ?, ultima_revision = ?
                 WHERE id = ? AND usuario_id = ?";
         $stmt = $this->db->prepare($sql);
         $edad = (float)($data['age'] ?? 0);
@@ -79,9 +87,8 @@ class Pet
         $especie = $data['species'] ?? '';
         $raza = $data['breed'] ?? '';
         $estado = $data['healthStatus'] ?? 'healthy';
-        $observaciones = $data['healthNotes'] ?? '';
         $ultima = $data['lastCheckup'] ?? date('Y-m-d');
-        $stmt->bind_param('sssddsssii', $nombre, $especie, $raza, $edad, $peso, $estado, $observaciones, $ultima, $id, $usuarioId);
+        $stmt->bind_param('sssddssii', $nombre, $especie, $raza, $edad, $peso, $estado, $ultima, $id, $usuarioId);
         return $stmt->execute();
     }
 

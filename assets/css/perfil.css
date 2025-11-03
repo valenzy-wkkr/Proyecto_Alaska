@@ -35,7 +35,7 @@
             .grupo-form-perfil input, .grupo-form-perfil select, .grupo-form-perfil textarea {width:100%;padding:.65rem .8rem;border:1px solid var(--color-borde);border-radius:8px;font-size:.85rem;font-family:inherit;transition:var(--transicion);background:#fff;}
             .grupo-form-perfil input:focus, .grupo-form-perfil select:focus, .grupo-form-perfil textarea:focus {outline:none;border-color:var(--color-primario);box-shadow:0 0 0 3px rgba(91,140,90,.15);} 
             .form-inline-dos {display:grid;grid-template-columns:1fr 1fr;gap:.9rem;} @media (max-width:600px){.form-inline-dos{grid-template-columns:1fr;}}
-            .btn-guardar {background:var(--color-acento);color:#fff;border:none;padding:.7rem 1.4rem;border-radius:8px;font-weight:600;font-size:.85rem;cursor:pointer;transition:var(--transicion);box-shadow:0 2px 6px rgba(0,0,0,.15);} .btn-guardar:hover {background:#ff5722;}
+            .btn-guardar {background:var(--color-primario);color:#fff;border:none;padding:.7rem 1.4rem;border-radius:8px;font-weight:600;font-size:.85rem;cursor:pointer;transition:var(--transicion);box-shadow:0 2px 6px rgba(0,0,0,.15);} .btn-guardar:hover {background:#ff5722;}
             .alerta-lite {background:#fff3e0;border:1px solid #ffc58f;padding:.8rem 1rem;border-radius:10px;font-size:.75rem;display:flex;gap:.6rem;align-items:flex-start;line-height:1.3;color:#7a4a00;margin:1rem 0;font-weight:500;}
             .alerta-lite i {color:#ff7043;font-size:1rem;}
             .upgrade-box {background:linear-gradient(135deg,var(--color-primario),var(--color-primario-oscuro));color:#fff;padding:1.2rem 1.1rem;border-radius:14px;position:relative;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.18);}
@@ -44,3 +44,63 @@
             .upgrade-box p {margin:0 0 .7rem;font-size:.75rem;line-height:1.35;}
             .upgrade-box button {background:var(--color-secundario);color:#fff;border:none;padding:.6rem 1rem;border-radius:8px;font-size:.75rem;font-weight:600;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.2);display:inline-flex;align-items:center;gap:.4rem;}
             .upgrade-box button:hover {background:#ff5722;}
+
+          /* --- Movido desde html/perfil.php (estilos inline) --- */
+          .contenedor-imagen-logo {width:80px;height:80px;display:flex;justify-content:center;align-items:center;border-radius:50%;overflow:hidden;background-color:#fff;padding:2px;box-shadow:0 2px 4px rgba(0,0,0,.2);transition:var(--transicion);} 
+          .avatar {position:relative;cursor:pointer;overflow:hidden;}
+          .avatar:hover .avatar-overlay {opacity:1;}
+          .avatar-overlay {position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s ease;border-radius:50%;color:#fff;font-size:1.2rem;}
+          #inputFotoPerfil {display:none;}
+          .modal-foto {display:none;position:fixed;z-index:10000;left:0;top:0;width:100%;height:100%;background-color:rgba(0,0,0,.8);animation:fadeIn .3s ease;}
+          .modal-foto-content {background:#fff;margin:5% auto;padding:20px;border-radius:12px;width:90%;max-width:500px;position:relative;}
+          .preview-container {text-align:center;margin:20px 0;}
+          .preview-image {max-width:200px;max-height:200px;border-radius:50%;object-fit:cover;border:3px solid var(--color-primario);} 
+          .upload-area {border:2px dashed var(--color-borde);border-radius:8px;padding:20px;text-align:center;margin:15px 0;cursor:pointer;transition:all .3s ease;}
+          .upload-area:hover {border-color:var(--color-primario);background-color:var(--fondo-claro);} 
+          .upload-area.dragover {border-color:var(--color-primario);background-color:var(--color-primario-claro);} 
+          /* Estilos para formulario de mascotas */
+          #formNuevaMascota input:focus, #formNuevaMascota select:focus {outline:none;border-color:var(--color-primario);box-shadow:0 0 0 2px rgba(64,123,255,.1);} 
+          /* Flecha personalizada del select sin desbordar */
+          #formNuevaMascota select {-webkit-appearance:none;-moz-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .9rem center;background-size:14px 14px;background-origin:padding-box;background-clip:padding-box;padding-right:2.4rem;overflow:hidden;box-sizing:border-box;cursor:pointer;}
+          #formNuevaMascota select::-ms-expand {display:none;}
+          #formNuevaMascota small {font-size:12px;color:#666;margin-top:4px;display:block;}
+          /* Botones del modal y formularios locales (alineado con estilo global) */
+          .btn-guardar {background:var(--color-primario);color:#fff;border:none;padding:10px 20px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;transition:background-color .3s ease;}
+          .btn-guardar:hover {background:#ff5722;}
+          .btn-guardar:disabled {background:#ccc;cursor:not-allowed;}
+          /* Avatar: evitar deformación de la foto */
+          .avatar {width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--color-primario),var(--color-secundario));display:flex;align-items:center;justify-content:center;color:#fff;font-size:2rem;font-weight:600;box-shadow:0 4px 12px rgba(0,0,0,.15);overflow:hidden;}
+          .avatar img{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%;}
+          /* Menú desplegable de usuario (navbar) */
+          .menu-usuario {position:relative;}
+          .perfil-nav-container {position:relative;}
+          .perfil-avatar {display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px 12px;border-radius:8px;transition:background-color .3s ease;}
+          .perfil-avatar:hover {background-color:rgba(255,255,255,.1);} 
+          .avatar-nav-img,.inicial-circulo {width:32px;height:32px;border-radius:50%;object-fit:cover;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--color-primario),var(--color-secundario));color:#fff;font-size:.9rem;font-weight:600;}
+          .arrow-down {font-size:.7rem;color:#fff;transition:transform .3s ease;}
+          .perfil-avatar.active .arrow-down {transform:rotate(180deg);} 
+          .menu-desplegable {position:absolute;top:100%;right:0;background:#fff;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,.15);min-width:220px;padding:12px 0;opacity:0;visibility:hidden;transform:translateY(-10px);transition:all .3s ease;z-index:1000;border:1px solid rgba(0,0,0,.1);} 
+          .menu-desplegable.show {opacity:1;visibility:visible;transform:translateY(0);} 
+          .info-usuario-menu {padding:12px 16px;border-bottom:1px solid #f0f0f0;} 
+          .info-usuario-menu strong {display:block;color:#333;font-size:.95rem;margin-bottom:2px;} 
+          .info-usuario-menu small {color:#666;font-size:.8rem;} 
+          .separador-menu {height:1px;background:#f0f0f0;margin:8px 0;} 
+          .opcion-menu {display:flex;align-items:center;gap:12px;padding:10px 16px;color:#333;text-decoration:none;font-size:.9rem;transition:background-color .2s ease;} 
+          .opcion-menu:hover {background-color:#f8f9fa;color:var(--color-primario);} 
+          .opcion-menu.logout {color:#dc3545;} 
+          .opcion-menu.logout:hover {background-color:#ffeaea;color:#dc3545;} 
+          .opcion-menu i {width:16px;text-align:center;} 
+          @media (max-width:768px){.menu-desplegable{right:-10px;min-width:200px;}}
+
+          /* Interruptor de modo claro/oscuro (UI no funcional) */
+          .theme-mode-inline {display:flex;align-items:center;gap:.6rem;margin:.25rem 0 1rem;color:var(--color-texto-claro);}
+          .theme-mode-inline .switch {position:relative;width:46px;height:24px;display:inline-block;cursor:pointer;}
+          .theme-mode-inline .switch input {display:none;}
+          .theme-mode-inline .slider {position:absolute;inset:0;background:var(--color-borde);border-radius:999px;transition:.3s;cursor:pointer;}
+          .theme-mode-inline .slider::before {content:"";position:absolute;width:20px;height:20px;left:2px;top:2px;background:#fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:.3s;}
+          .theme-mode-inline input:checked + .slider {background:var(--color-primario);}
+          .theme-mode-inline input:checked + .slider::before {transform:translateX(22px);} 
+          .theme-mode-inline .fa-sun {color:#f7b733;}
+          .theme-mode-inline .fa-moon {color:#6c757d;}
+          .theme-mode-inline small {font-size:.8rem;color:var(--color-texto-claro);} 
+          .theme-mode-inline[aria-disabled="true"] {opacity:.75;pointer-events:none;}

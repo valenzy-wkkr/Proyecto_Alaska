@@ -60,30 +60,6 @@ function obtenerIniciales($nombre)
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="shortcut icon" href="/Proyecto_Alaska/img/alaska-ico.png" type="image/x-icon">
 </head>
-<style>
-    /************** */
-    .contenedor-imagen-logo {
-        width: 80px;
-        height: 80px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 50%;
-        overflow: hidden;
-        background-color: white;
-        padding: 2px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        transition: var(--transicion);
-    }
-
-    .modal-content{
-         overflow-y: auto; /* permitir scroll interno */
-    }
-
-    /* Ocultar la barra visual pero mantener el scroll */
-.modal-content { scrollbar-width: none; } /* Firefox */
-.modal-content::-webkit-scrollbar { width: 0; height: 0; } /* Chrome/Edge/Safari */
-</style>
 
 <body>
     <!-- Header -->
@@ -272,63 +248,77 @@ function obtenerIniciales($nombre)
                     <div class="modal" id="petModal">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h3>Agregar Mascota</h3>
+                                <h3 id="tituloModalMascota">Agregar Mascota</h3>
                                 <button class="modal-close" id="closePetModal">
                                     <i class="fas fa-times"></i>
                                 </button>
                             </div>
-                            <form id="petForm">
-                                <input type="hidden" id="petId" name="id">
-                                <div class="form-group">
-                                    <label for="petName">Nombre</label>
-                                    <input type="text" id="petName" name="name" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="petSpecies">Especie</label>
-                                    <select id="petSpecies" name="species" required>
-                                        <option value="">Seleccionar especie</option>
-                                        <option value="perro">Perro</option>
-                                        <option value="gato">Gato</option>
-                                        <option value="ave">Ave</option>
-                                        <option value="roedor">Roedor</option>
-                                        <option value="otro">Otro</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="petBreed">Raza</label>
-                                    <input type="text" id="petBreed" name="breed">
-                                </div>
+                            <!-- Formulario copiado del perfil (ajustado para el dashboard) -->
+                            <form id="formNuevaMascota">
+                                <input type="hidden" id="inpIdMascota" value="">
+
                                 <div class="form-row">
                                     <div class="form-group">
-                                        <label for="petAge">Edad (años)</label>
-                                        <input type="number" id="petAge" name="age" min="0" step="0.1">
+                                        <label for="inpNombreMascota">Nombre</label>
+                                        <input type="text" id="inpNombreMascota" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="petWeight">Peso (kg)</label>
-                                        <input type="number" id="petWeight" name="weight" min="0" step="0.1">
+                                        <label for="selEspecie">Especie</label>
+                                        <select id="selEspecie" required>
+                                            <option value="">Selecciona especie</option>
+                                            <option value="Perro">Perro</option>
+                                            <option value="Gato">Gato</option>
+                                            <option value="Ave">Ave</option>
+                                            <option value="Pez">Pez</option>
+                                            <option value="Reptil">Reptil</option>
+                                            <option value="Roedor">Roedor</option>
+                                            <option value="Otro">Otro</option>
+                                        </select>
                                     </div>
                                 </div>
+
                                 <div class="form-row">
                                     <div class="form-group">
-                                        <label for="petHealthStatus">Estado de salud</label>
-                                        <select id="petHealthStatus" name="healthStatus">
+                                        <label for="selRaza">Raza</label>
+                                        <select id="selRaza" disabled>
+                                            <option value="">Selecciona primero la especie</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inpRazaOtro">Otra raza (si aplica)</label>
+                                        <input type="text" id="inpRazaOtro" placeholder="Especifica la raza" style="display:none;">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="inpEdad">Edad (años)</label>
+                                        <input type="number" id="inpEdad" min="0" step="0.1">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inpPeso">Peso (kg)</label>
+                                        <input type="number" id="inpPeso" min="0" step="0.1">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="selEstadoSalud">Estado de salud</label>
+                                        <select id="selEstadoSalud">
                                             <option value="healthy">Saludable</option>
                                             <option value="attention">Necesita atención</option>
                                             <option value="warning">Requiere revisión</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label for="petHealthNotes">Observaciones</label>
-                                        <textarea id="petHealthNotes" name="healthNotes" rows="3"></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="petLastCheckup">Última revisión</label>
-                                        <input type="date" id="petLastCheckup" name="lastCheckup">
+                                        <label for="inpUltimaRevision">Última revisión</label>
+                                        <input type="date" id="inpUltimaRevision">
                                     </div>
                                 </div>
+
                                 <div class="form-actions">
                                     <button type="button" class="btn-secondary" id="cancelPet">Cancelar</button>
-                                    <button type="submit" class="btn-primary">Guardar</button>
+                                    <button type="submit" class="btn-primary" id="guardarMascotaDashboard">Guardar</button>
                                 </div>
                             </form>
                         </div>

@@ -46,7 +46,26 @@ class Dashboard {
         
         // Formularios
         document.getElementById('reminderForm')?.addEventListener('submit', (e) => this.handleReminderSubmit(e));
-        document.getElementById('petForm')?.addEventListener('submit', (e) => this.handlePetSubmit(e));
+        document.getElementById('formNuevaMascota')?.addEventListener('submit', (e) => this.handlePetSubmitPerfilStyle(e));
+
+        // Listeners de especie/raza (estilo perfil)
+        const selEspecie = document.getElementById('selEspecie');
+        const selRaza = document.getElementById('selRaza');
+        if (selEspecie) {
+            selEspecie.addEventListener('change', () => this.poblarRazas());
+        }
+        if (selRaza) {
+            selRaza.addEventListener('change', () => {
+                const inpRazaOtro = document.getElementById('inpRazaOtro');
+                if (!inpRazaOtro) return;
+                if (selRaza.value === 'Otra') {
+                    inpRazaOtro.style.display = '';
+                } else {
+                    inpRazaOtro.style.display = 'none';
+                    inpRazaOtro.value = '';
+                }
+            });
+        }
         
         // Cerrar modales al hacer clic fuera
         window.addEventListener('click', (e) => {
@@ -351,6 +370,65 @@ class Dashboard {
         this.renderPetsHealth();
         this.renderBlogArticles();
         this.renderRecentActivity();
+    }
+
+    /**
+     * Mapeo de especies -> razas (estilo perfil)
+     */
+    getSpeciesBreeds() {
+        return {
+            'Perro': ['Labrador Retriever','Pastor Alemán','Golden Retriever','Poodle','Chihuahua','Bulldog','Beagle','Mestizo','Otra'],
+            'Gato': ['Siamés','Persa','Maine Coon','Bengalí','Sphynx','Angora','Mestizo','Otra'],
+            'Ave': ['Canario','Periquito','Cacatúa','Agapornis','Loro','Otra'],
+            'Pez': ['Betta','Guppy','Goldfish','Cíclido','Molly','Otra'],
+            'Reptil': ['Iguana','Gecko','Tortuga','Serpiente','Camaleón','Otra'],
+            'Roedor': ['Hámster','Cobaya','Conejo','Chinchilla','Rata','Otra'],
+            'Otro': ['Mestizo','Otra']
+        };
+    }
+
+    /**
+     * Poblar select de razas según especie (estilo perfil)
+     */
+    poblarRazas() {
+        const selEspecie = document.getElementById('selEspecie');
+        const selRaza = document.getElementById('selRaza');
+        const inpRazaOtro = document.getElementById('inpRazaOtro');
+        if (!selRaza || !selEspecie) return;
+        const especie = selEspecie.value;
+        selRaza.innerHTML = '';
+        if (inpRazaOtro) { inpRazaOtro.style.display = 'none'; inpRazaOtro.value = ''; }
+        if (!especie) {
+            selRaza.disabled = true;
+            const opt = document.createElement('option');
+            opt.value = '';
+            opt.textContent = 'Selecciona primero la especie';
+            selRaza.appendChild(opt);
+            return;
+        }
+        const mapa = this.getSpeciesBreeds();
+        const lista = mapa[especie] || ['Mestizo','Otra'];
+        selRaza.disabled = false;
+        selRaza.appendChild(new Option('Selecciona una raza',''));
+        lista.forEach(r => selRaza.appendChild(new Option(r, r)));
+    }
+
+    /**
+     * Mapea especies guardadas (ej. 'perro') al valor del select del perfil ('Perro')
+     */
+    mapSpeciesToPerfil(species) {
+        if (!species) return '';
+        const s = String(species).toLowerCase();
+        switch (s) {
+            case 'perro': return 'Perro';
+            case 'gato': return 'Gato';
+            case 'ave': return 'Ave';
+            case 'pez': return 'Pez';
+            case 'reptil': return 'Reptil';
+            case 'roedor': return 'Roedor';
+            case 'otro': return 'Otro';
+            default: return species; // dejar como está si no coincide
+        }
     }
 
     /**
@@ -661,41 +739,55 @@ class Dashboard {
      */
     openPetModal(pet = null) {
         const modal = document.getElementById('petModal');
-        if (modal) {
-            modal.classList.add('active');
-            const titleEl = modal.querySelector('.modal-header h3');
-            const form = document.getElementById('petForm');
-            if (!form) return;
-            // Campos
-            const idInput = document.getElementById('petId');
-            const nameInput = document.getElementById('petName');
-            const speciesSelect = document.getElementById('petSpecies');
-            const breedInput = document.getElementById('petBreed');
-            const ageInput = document.getElementById('petAge');
-            const weightInput = document.getElementById('petWeight');
-            const healthSelect = document.getElementById('petHealthStatus');
-            const healthNotesInput = document.getElementById('petHealthNotes');
-            const lastCheckupInput = document.getElementById('petLastCheckup');
+        if (!modal) return;
+        modal.classList.add('active');
+        const titleEl = document.getElementById('tituloModalMascota');
+        const form = document.getElementById('formNuevaMascota');
+        if (!form) return;
+        // Campos estilo perfil
+        const idInput = document.getElementById('inpIdMascota');
+        const nameInput = document.getElementById('inpNombreMascota');
+        const speciesSelect = document.getElementById('selEspecie');
+        const breedSelect = document.getElementById('selRaza');
+        const breedOther = document.getElementById('inpRazaOtro');
+        const ageInput = document.getElementById('inpEdad');
+        const weightInput = document.getElementById('inpPeso');
+        const healthSelect = document.getElementById('selEstadoSalud');
+        const lastCheckupInput = document.getElementById('inpUltimaRevision');
 
-            if (pet) {
-                if (titleEl) titleEl.textContent = 'Editar Mascota';
-                if (idInput) idInput.value = pet.id;
-                if (nameInput) nameInput.value = pet.name || '';
-                if (speciesSelect) speciesSelect.value = pet.species || '';
-                if (breedInput) breedInput.value = pet.breed || '';
-                if (ageInput) ageInput.value = pet.age ?? '';
-                if (weightInput) weightInput.value = pet.weight ?? '';
-                if (healthSelect) healthSelect.value = pet.healthStatus || 'healthy';
-                if (healthNotesInput) healthNotesInput.value = pet.healthNotes || '';
-                if (lastCheckupInput) lastCheckupInput.value = (pet.lastCheckup || '').slice(0, 10);
-            } else {
-                if (titleEl) titleEl.textContent = 'Agregar Mascota';
-                form.reset();
-                if (idInput) idInput.value = '';
-                if (healthSelect) healthSelect.value = 'healthy';
-                if (healthNotesInput) healthNotesInput.value = '';
-                if (lastCheckupInput) lastCheckupInput.value = new Date().toISOString().split('T')[0];
+        if (pet) {
+            if (titleEl) titleEl.textContent = 'Editar Mascota';
+            if (idInput) idInput.value = pet.id;
+            if (nameInput) nameInput.value = pet.name || '';
+            if (speciesSelect) speciesSelect.value = this.mapSpeciesToPerfil(pet.species || '');
+            // Poblar razas y seleccionar
+            this.poblarRazas();
+            const breedValue = pet.breed || '';
+            if (breedSelect) {
+                const optionExists = Array.from(breedSelect.options).some(o => o.value === breedValue);
+                if (breedValue && optionExists) {
+                    breedSelect.value = breedValue;
+                    if (breedOther) { breedOther.style.display = 'none'; breedOther.value=''; }
+                } else if (breedValue) {
+                    breedSelect.value = 'Otra';
+                    if (breedOther) { breedOther.style.display = ''; breedOther.value = breedValue; }
+                } else {
+                    breedSelect.value = '';
+                    if (breedOther) { breedOther.style.display = 'none'; breedOther.value=''; }
+                }
             }
+            if (ageInput) ageInput.value = pet.age ?? '';
+            if (weightInput) weightInput.value = pet.weight ?? '';
+            if (healthSelect) healthSelect.value = pet.healthStatus || 'healthy';
+            if (lastCheckupInput) lastCheckupInput.value = (pet.lastCheckup || '').slice(0, 10);
+        } else {
+            if (titleEl) titleEl.textContent = 'Agregar Mascota';
+            form.reset();
+            if (idInput) idInput.value = '';
+            this.poblarRazas();
+            if (healthSelect) healthSelect.value = 'healthy';
+            if (breedOther) { breedOther.style.display = 'none'; breedOther.value=''; }
+            if (lastCheckupInput) lastCheckupInput.value = new Date().toISOString().split('T')[0];
         }
     }
 
@@ -704,12 +796,12 @@ class Dashboard {
      */
     closePetModal() {
         const modal = document.getElementById('petModal');
-        if (modal) {
-            modal.classList.remove('active');
-            document.getElementById('petForm').reset();
-            const titleEl = modal.querySelector('.modal-header h3');
-            if (titleEl) titleEl.textContent = 'Agregar Mascota';
-        }
+        if (!modal) return;
+        modal.classList.remove('active');
+        const form = document.getElementById('formNuevaMascota');
+        if (form) form.reset();
+        const titleEl = document.getElementById('tituloModalMascota');
+        if (titleEl) titleEl.textContent = 'Agregar Mascota';
     }
 
     /**
@@ -763,6 +855,11 @@ class Dashboard {
             modal.classList.remove('active');
         });
     }
+
+    /**
+     * Atajo: obtener elemento por id
+     */
+    $(id) { return document.getElementById(id); }
 
     /**
      * Puebla el select de mascotas
@@ -871,21 +968,21 @@ class Dashboard {
     /**
      * Maneja el envío del formulario de mascota
      */
-    async handlePetSubmit(e) {
+    async handlePetSubmitPerfilStyle(e) {
         e.preventDefault();
-        
-        const formData = new FormData(e.target);
-        const pet = {
-            name: formData.get('name'),
-            species: formData.get('species'),
-            breed: formData.get('breed'),
-            age: parseFloat(formData.get('age')) || 0,
-            weight: parseFloat(formData.get('weight')) || 0,
-            healthStatus: formData.get('healthStatus') || 'healthy',
-            healthNotes: formData.get('healthNotes') || '',
-            lastCheckup: (formData.get('lastCheckup') || new Date().toISOString().split('T')[0])
-        };
-        const petId = parseInt(formData.get('id')) || null;
+        const idInput = document.getElementById('inpIdMascota');
+        const name = (document.getElementById('inpNombreMascota')?.value || '').trim();
+        const species = document.getElementById('selEspecie')?.value || '';
+        const selRaza = document.getElementById('selRaza');
+        const inpRazaOtro = document.getElementById('inpRazaOtro');
+        const breed = selRaza && selRaza.value === 'Otra' ? (inpRazaOtro?.value || '').trim() : (selRaza?.value || '').trim();
+        const age = parseFloat(document.getElementById('inpEdad')?.value || '0') || 0;
+        const weight = parseFloat(document.getElementById('inpPeso')?.value || '0') || 0;
+        const healthStatus = document.getElementById('selEstadoSalud')?.value || 'healthy';
+        const lastCheckup = document.getElementById('inpUltimaRevision')?.value || new Date().toISOString().split('T')[0];
+
+        const pet = { name, species, breed: breed || 'No especificada', age, weight, healthStatus, healthNotes: '', lastCheckup };
+        const petId = idInput && idInput.value ? parseInt(idInput.value) : null;
 
         try {
             let result;

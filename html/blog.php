@@ -61,37 +61,6 @@ function obtenerIniciales($nombre)
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet" />
     <link rel="shortcut icon" href="../img/alaska-ico.png" type="image/x-icon">
-    <style>
-        /************** */
-        .contenedor-imagen-logo {
-            width: 80px;
-            height: 80px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 50%;
-            overflow: hidden;
-            background-color: white;
-            padding: 2px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            transition: var(--transicion);
-        }
-
-        /* Categorías activas */
-        .widget-categorias a.active {
-            background: var(--color-primario);
-            color: var(--color-texto-blanco);
-            transform: translateX(5px);
-        }
-
-        /* Estado activo de etiquetas (igual al hover) */
-        .nube-etiquetas a.active {
-            background: var(--color-primario);
-            color: var(--color-texto-blanco);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(91, 140, 90, 0.3);
-        }
-    </style>
 </head>
 
 

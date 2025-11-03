@@ -309,3 +309,23 @@ body {
     grid-column: 1 / 2;
   }
 }
+
+/* Inline styles moved from mental.html */
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  color: var(--color-primario);
+  background: #ffffff;
+  border: 2px solid var(--color-primario);
+  border-radius: var(--radio-borde);
+  text-decoration: none;
+  font-weight: 600;
+  box-shadow: var(--sombra-caja);
+  transition: var(--transicion);
+  margin: 1rem 2rem;
+}
+.btn-back::before { content: "←"; font-size: 1rem; line-height: 1; }
+.btn-back:hover { background: var(--color-primario); color: var(--color-texto-blanco); transform: translateY(-2px); box-shadow: var(--sombra-caja-hover); }
+.btn-back:focus-visible { outline: 3px solid var(--color-primario-claro); outline-offset: 2px; }

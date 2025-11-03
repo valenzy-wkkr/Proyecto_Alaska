@@ -22,6 +22,21 @@
   --espaciado-seccion: 5rem;
 }
 
+/* Shared logo container (moved from multiple pages) */
+.contenedor-imagen-logo {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: white;
+  padding: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: var(--transicion);
+}
+
 * {
   margin: 0;
   padding: 0;

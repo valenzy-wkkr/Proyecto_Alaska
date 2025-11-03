@@ -165,6 +165,31 @@
   text-decoration: underline;
 }
 
+/* Inline styles moved from public/dashboard.php */
+.contenedor-imagen-logo {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: white;
+  padding: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: var(--transicion);
+}
+
+/* Modal content scrollbar behavior */
+.modal-content {
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+}
+.modal-content::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
 /* Recordatorios */
 .reminders-container {
   display: flex;
