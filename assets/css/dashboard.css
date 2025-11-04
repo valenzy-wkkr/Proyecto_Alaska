@@ -190,6 +190,122 @@
   height: 0;
 }
 
+/* Custom Confirmation Dialog */
+.confirmation-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+  animation: fadeIn 0.3s ease;
+}
+
+.confirmation-dialog-content {
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+  text-align: center;
+}
+
+.confirmation-dialog-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: var(--color-secundario);
+}
+
+.confirmation-dialog-title {
+  font-size: 1.5rem;
+  color: var(--color-texto);
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.confirmation-dialog-message {
+  color: var(--color-texto-claro);
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+  font-size: 1rem;
+}
+
+.confirmation-dialog-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.confirmation-dialog-buttons button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transicion);
+  min-width: 100px;
+}
+
+.confirmation-dialog-cancel {
+  background: var(--color-texto-claro);
+  color: white;
+}
+
+.confirmation-dialog-cancel:hover {
+  background: #666;
+  transform: translateY(-1px);
+}
+
+.confirmation-dialog-confirm {
+  background: var(--color-secundario);
+  color: white;
+}
+
+.confirmation-dialog-confirm:hover {
+  background: #e55a2b;
+  transform: translateY(-1px);
+}
+
+.confirmation-dialog-warning {
+  background: #dc3545;
+  color: white;
+}
+
+.confirmation-dialog-warning:hover {
+  background: #c82333;
+  transform: translateY(-1px);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Notification styles - DESHABILITADAS */
+.notification {
+  display: none !important;
+  /* Las notificaciones están deshabilitadas */
+}
+
 /* Recordatorios */
 .reminders-container {
   display: flex;

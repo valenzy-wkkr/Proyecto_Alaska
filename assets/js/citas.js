@@ -255,9 +255,7 @@ class CitasManager {
         const cita = this.citas.find(c => c.id == id);
         if (!cita) return;
 
-        // Aquí podrías abrir un modal de edición
-        // Por ahora, solo mostramos un prompt simple
-        const nuevoEstado = prompt('Nuevo estado (programada/completada/cancelada):', cita.estado);
+        const nuevoEstado = await this.mostrarEdicionCita(cita);
         if (nuevoEstado && nuevoEstado !== cita.estado) {
             await this.actualizarCita(id, { estado: nuevoEstado });
         }
@@ -288,7 +286,18 @@ class CitasManager {
     }
 
     async eliminarCita(id) {
-        if (!confirm('¿Estás seguro de que quieres eliminar esta cita?')) {
+        const cita = this.citas.find(c => c.id == id);
+        const nombreMascota = cita?.nombre_mascota || cita?.tipo_mascota || 'esta cita';
+        
+        const confirmacion = await this.mostrarConfirmacion({
+            titulo: '¿Eliminar cita?',
+            mensaje: `¿Estás seguro de que quieres eliminar la cita de ${nombreMascota} programada para ${this.formatearFechaHora(cita?.fecha_cita)}?`,
+            confirmarTexto: 'Eliminar',
+            cancelarTexto: 'Cancelar',
+            tipo: 'warning'
+        });
+
+        if (!confirmacion) {
             return;
         }
 
@@ -491,6 +500,245 @@ class CitasManager {
                 elemento.style.display = 'none';
             }, 5000);
         }
+    }
+
+    /**
+     * Muestra un diálogo de confirmación personalizado
+     */
+    async mostrarConfirmacion(opciones) {
+        return new Promise((resolve) => {
+            const {
+                titulo,
+                mensaje,
+                confirmarTexto = 'Confirmar',
+                cancelarTexto = 'Cancelar',
+                tipo = 'question'
+            } = opciones;
+
+            // Eliminar diálogo existente si hay alguno
+            const dialogoExistente = document.querySelector('.confirmacion-cita-dialogo');
+            if (dialogoExistente) {
+                dialogoExistente.remove();
+            }
+
+            // Crear el overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'confirmacion-cita-overlay';
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                animation: fadeIn 0.3s ease;
+            `;
+
+            // Crear el diálogo
+            const dialogo = document.createElement('div');
+            dialogo.className = 'confirmacion-cita-dialogo';
+            dialogo.style.cssText = `
+                background: white;
+                border-radius: 12px;
+                padding: 24px;
+                max-width: 400px;
+                width: 90%;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+                animation: slideIn 0.3s ease;
+                text-align: center;
+            `;
+
+            // Determinar el icono según el tipo
+            const iconoClase = tipo === 'warning' ? 'fa-exclamation-triangle' : 'fa-question-circle';
+            const colorIcono = tipo === 'warning' ? '#dc3545' : '#1976d2';
+
+            dialogo.innerHTML = `
+                <div style="margin-bottom: 16px;">
+                    <i class="fas ${iconoClase}" style="font-size: 48px; color: ${colorIcono};"></i>
+                </div>
+                <h3 style="margin: 0 0 12px 0; color: #333; font-size: 20px; font-weight: 600;">${titulo}</h3>
+                <p style="margin: 0 0 24px 0; color: #666; font-size: 16px; line-height: 1.5;">${mensaje}</p>
+                <div style="display: flex; gap: 12px; justify-content: center;">
+                    <button id="btnCancelarCita" style="
+                        padding: 10px 20px;
+                        border: 1px solid #ddd;
+                        background: white;
+                        color: #666;
+                        border-radius: 6px;
+                        cursor: pointer;
+                        font-size: 14px;
+                        font-weight: 500;
+                        transition: all 0.2s;
+                        min-width: 100px;
+                    ">${cancelarTexto}</button>
+                    <button id="btnConfirmarCita" style="
+                        padding: 10px 20px;
+                        border: none;
+                        background: ${tipo === 'warning' ? '#dc3545' : '#1976d2'};
+                        color: white;
+                        border-radius: 6px;
+                        cursor: pointer;
+                        font-size: 14px;
+                        font-weight: 500;
+                        transition: all 0.2s;
+                        min-width: 100px;
+                    ">${confirmarTexto}</button>
+                </div>
+            `;
+
+            overlay.appendChild(dialogo);
+            document.body.appendChild(overlay);
+
+            // Event listeners
+            dialogo.querySelector('#btnConfirmarCita').addEventListener('click', () => {
+                document.body.removeChild(overlay);
+                resolve(true);
+            });
+
+            dialogo.querySelector('#btnCancelarCita').addEventListener('click', () => {
+                document.body.removeChild(overlay);
+                resolve(false);
+            });
+
+            // Cerrar con ESC
+            const handleEscape = (e) => {
+                if (e.key === 'Escape') {
+                    document.body.removeChild(overlay);
+                    document.removeEventListener('keydown', handleEscape);
+                    resolve(false);
+                }
+            };
+            document.addEventListener('keydown', handleEscape);
+
+            // Cerrar al hacer clic en el overlay
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    document.body.removeChild(overlay);
+                    resolve(false);
+                }
+            });
+        });
+    }
+
+    async mostrarEdicionCita(cita) {
+        return new Promise((resolve) => {
+            const overlay = document.createElement('div');
+            overlay.className = 'confirmacion-cita-overlay';
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                animation: fadeIn 0.3s ease;
+            `;
+
+            const dialogo = document.createElement('div');
+            dialogo.className = 'confirmacion-cita-dialogo';
+            dialogo.style.cssText = `
+                background: white;
+                border-radius: 12px;
+                padding: 24px;
+                max-width: 420px;
+                width: 90%;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+                animation: slideIn 0.3s ease;
+            `;
+
+            const opciones = ['programada', 'completada', 'cancelada'];
+            const opcionesHtml = opciones.map(op => `
+                <option value="${op}" ${op === cita.estado ? 'selected' : ''}>
+                    ${this.obtenerTextoEstado(op)}
+                </option>
+            `).join('');
+
+            dialogo.innerHTML = `
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom: 16px;">
+                    <i class="fas fa-edit" style="font-size: 32px; color: #1976d2;"></i>
+                    <div>
+                        <h3 style="margin:0; font-size:20px; color:#333;">Editar cita</h3>
+                        <p style="margin:4px 0 0; color:#666; font-size:14px;">Actualiza el estado de la cita</p>
+                    </div>
+                </div>
+
+                <label for="estadoCitaSel" style="display:block; font-size:12px; color:#6b7280; margin-bottom:6px; text-transform:uppercase; letter-spacing:.08em;">Estado</label>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <select id="estadoCitaSel" style="flex:1; padding:10px 12px; border:1px solid #e5e7eb; border-radius:8px; font-size:14px;">
+                        ${opcionesHtml}
+                    </select>
+                </div>
+
+                <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:22px;">
+                    <button id="btnCancelarEdit" style="
+                        padding: 10px 16px;
+                        border: 1px solid #ddd;
+                        background: white;
+                        color: #666;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-size: 14px;
+                        font-weight: 500;
+                    ">Cancelar</button>
+                    <button id="btnGuardarEdit" style="
+                        padding: 10px 16px;
+                        border: none;
+                        background: #1976d2;
+                        color: white;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-size: 14px;
+                        font-weight: 600;
+                    ">Guardar</button>
+                </div>
+            `;
+
+            overlay.appendChild(dialogo);
+            document.body.appendChild(overlay);
+
+            const cerrar = (valor) => {
+                if (document.body.contains(overlay)) document.body.removeChild(overlay);
+                resolve(valor);
+            };
+
+            dialogo.querySelector('#btnGuardarEdit').addEventListener('click', () => {
+                const sel = dialogo.querySelector('#estadoCitaSel');
+                cerrar(sel.value);
+            });
+            dialogo.querySelector('#btnCancelarEdit').addEventListener('click', () => cerrar(null));
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) cerrar(null); });
+            const handleEscape = (e) => { if (e.key === 'Escape') { document.removeEventListener('keydown', handleEscape); cerrar(null); } };
+            document.addEventListener('keydown', handleEscape);
+        });
+    }
+
+    /**
+     * Formatea fecha y hora para mostrar en el diálogo de confirmación
+     */
+    formatearFechaHora(fechaISO) {
+        if (!fechaISO) return 'fecha desconocida';
+        
+        const fecha = new Date(fechaISO);
+        const opcionesFecha = { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        };
+        const opcionesHora = { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        };
+        
+        return `${fecha.toLocaleDateString('es-ES', opcionesFecha)} a las ${fecha.toLocaleTimeString('es-ES', opcionesHora)}`;
     }
 }
 

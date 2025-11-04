@@ -318,14 +318,14 @@ function obtenerIniciales($nombre)
 
                                 <!-- Nuevo campo Observaciones (opcional) -->
                                 <div>
-                                  <label for="inpObservacionesSalud" style="display: block; margin-bottom: 5px; font-weight: 600;">Observaciones (opcional)</label>
+                                  <label for="inpObservacionesSalud" style="display: block; margin-bottom: 5px; font-weight: 600;">Observaciones (obligatorio)</label>
                                   <textarea
                                     id="inpObservacionesSalud"
                                     rows="3"
                                     maxlength="300"
                                     style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; resize: vertical;"
                                     placeholder="Ej.: Tos ocasional, seguimiento con veterinario, alergias, etc."
-                                  ></textarea>
+                                  required></textarea>
                                   <small style="color: #666; font-size: 12px;">Máx. 300 caracteres</small>
                                 </div>
 

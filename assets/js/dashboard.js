@@ -508,7 +508,15 @@ class Dashboard {
      */
     async deleteReminder(id) {
         const rem = this.reminders.find(r => r.id === id);
-        const ok = confirm(`¿Eliminar el recordatorio ${rem ? '"' + rem.title + '" ' : ''}definitivamente?`);
+        
+        const ok = await this.showConfirmDialog({
+            title: '¿Eliminar recordatorio?',
+            message: `¿Estás seguro de que quieres eliminar el recordatorio ${rem ? '"' + rem.title + '" ' : ''}definitivamente?`,
+            confirmText: 'Eliminar',
+            cancelText: 'Cancelar',
+            type: 'warning'
+        });
+        
         if (!ok) return;
 
         try {
@@ -825,7 +833,15 @@ class Dashboard {
         console.log('Dashboard: Eliminando mascota ID:', id); // Debug
         const pet = this.pets.find(p => p.id === id);
         const name = pet ? pet.name : '';
-        const ok = confirm(`¿Eliminar la mascota ${name ? '"' + name + '" ' : ''}definitivamente?\n\nEsta acción también eliminará todas las citas programadas para esta mascota.\n\nEsta acción no se puede deshacer.`);
+        
+        const ok = await this.showConfirmDialog({
+            title: '¿Eliminar mascota?',
+            message: `¿Estás seguro de que quieres eliminar la mascota ${name ? '"' + name + '" ' : ''}definitivamente?\n\nEsta acción también eliminará todas las citas programadas para esta mascota.\n\nEsta acción no se puede deshacer.`,
+            confirmText: 'Eliminar',
+            cancelText: 'Cancelar',
+            type: 'warning'
+        });
+        
         if (!ok) return;
 
         try {
@@ -1139,16 +1155,89 @@ class Dashboard {
      * Muestra un mensaje de éxito
      */
     showSuccess(message) {
-        // Implementar notificación de éxito
-        console.log('Éxito:', message);
+        this.showNotification(message, 'success');
     }
 
     /**
      * Muestra un mensaje de error
      */
     showError(message) {
-        // Implementar notificación de error
-        console.error('Error:', message);
+        this.showNotification(message, 'error');
+    }
+
+    /**
+     * Muestra una notificación (deshabilitado)
+     */
+    showNotification(message, type) {
+        // Las notificaciones están deshabilitadas
+        // Si necesitas ver los mensajes, revisa la consola del navegador
+        console.log(`[${type.toUpperCase()}] ${message}`);
+    }
+
+    /**
+     * Muestra un diálogo de confirmación personalizado
+     */
+    showConfirmDialog(options) {
+        return new Promise((resolve) => {
+            const { title, message, confirmText = 'Eliminar', cancelText = 'Cancelar', type = 'warning' } = options;
+            
+            // Remove existing dialog if any
+            const existingDialog = document.querySelector('.confirmation-dialog');
+            if (existingDialog) {
+                existingDialog.remove();
+            }
+            
+            const dialog = document.createElement('div');
+            dialog.className = 'confirmation-dialog';
+            
+            const iconClass = type === 'warning' ? 'fa-exclamation-triangle' : 'fa-question-circle';
+            const confirmButtonClass = type === 'warning' ? 'confirmation-dialog-warning' : 'confirmation-dialog-confirm';
+            
+            dialog.innerHTML = `
+                <div class="confirmation-dialog-content">
+                    <div class="confirmation-dialog-icon">
+                        <i class="fas ${iconClass}"></i>
+                    </div>
+                    <h3 class="confirmation-dialog-title">${title}</h3>
+                    <p class="confirmation-dialog-message">${message}</p>
+                    <div class="confirmation-dialog-buttons">
+                        <button class="confirmation-dialog-cancel" id="confirmCancel">${cancelText}</button>
+                        <button class="${confirmButtonClass}" id="confirmOk">${confirmText}</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(dialog);
+            
+            // Handle button clicks
+            document.getElementById('confirmCancel').addEventListener('click', () => {
+                dialog.remove();
+                resolve(false);
+            });
+            
+            document.getElementById('confirmOk').addEventListener('click', () => {
+                dialog.remove();
+                resolve(true);
+            });
+            
+            // Close on backdrop click
+            dialog.addEventListener('click', (e) => {
+                if (e.target === dialog) {
+                    dialog.remove();
+                    resolve(false);
+                }
+            });
+            
+            // Close on Escape key
+            const handleEscape = (e) => {
+                if (e.key === 'Escape') {
+                    dialog.remove();
+                    document.removeEventListener('keydown', handleEscape);
+                    resolve(false);
+                }
+            };
+            document.addEventListener('keydown', handleEscape);
+        });
     }
 }
 

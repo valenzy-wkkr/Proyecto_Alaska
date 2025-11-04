@@ -241,6 +241,38 @@ function traducirEstadoSalud($estado) {
       #inpObservacionesSalud {
         font-family: 'Poppins', 'Montserrat', Arial, sans-serif;
       }
+
+      /* Animaciones para notificaciones y diálogos */
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideOut {
+        from {
+          transform: translateX(0);
+          opacity: 1;
+        }
+        to {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
     </style>
   </head>
   <body>
@@ -833,8 +865,8 @@ function traducirEstadoSalud($estado) {
           position: fixed;
           top: 20px;
           right: 20px;
-          background: ${tipo === 'success' ? '#4CAF50' : tipo === 'error' ? '#f44336' : '#2196F3'};
-          color: white;
+          background: ${tipo === 'success' ? 'white' : tipo === 'error' ? '#f44336' : '#2196F3'};
+          color: ${tipo === 'success' ? '#4CAF50' : 'white'};
           padding: 15px 20px;
           border-radius: 8px;
           box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -842,6 +874,7 @@ function traducirEstadoSalud($estado) {
           max-width: 300px;
           font-size: 14px;
           animation: slideIn 0.3s ease;
+          border: ${tipo === 'success' ? '2px solid #4CAF50' : 'none'};
         `;
         notif.textContent = mensaje;
         
@@ -852,6 +885,113 @@ function traducirEstadoSalud($estado) {
           notif.style.animation = 'slideOut 0.3s ease';
           setTimeout(() => document.body.removeChild(notif), 300);
         }, 3000);
+      }
+
+      function mostrarConfirmacion(titulo, mensaje, opciones = {}) {
+        return new Promise((resolve) => {
+          const {
+            confirmarTexto = 'Confirmar',
+            cancelarTexto = 'Cancelar',
+            tipo = 'question'
+          } = opciones;
+
+          // Crear overlay
+          const overlay = document.createElement('div');
+          overlay.className = 'confirmacion-overlay';
+          overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+          `;
+
+          // Crear diálogo
+          const dialogo = document.createElement('div');
+          dialogo.className = 'confirmacion-dialogo';
+          dialogo.style.cssText = `
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.3s ease;
+          `;
+
+          // Icono según tipo
+          const icono = tipo === 'warning' ? '⚠️' : '❓';
+          const colorIcono = tipo === 'warning' ? '#ff9800' : '#2196F3';
+
+          dialogo.innerHTML = `
+            <div style="text-align: center; margin-bottom: 20px;">
+              <div style="font-size: 48px; color: ${colorIcono}; margin-bottom: 10px;">${icono}</div>
+              <h3 style="margin: 0 0 10px 0; color: #333; font-size: 18px;">${titulo}</h3>
+              <p style="margin: 0; color: #666; line-height: 1.5;">${mensaje}</p>
+            </div>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+              <button id="btnConfirmar" style="
+                background: ${tipo === 'warning' ? '#f44336' : '#4CAF50'};
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: 500;
+                transition: all 0.2s ease;
+              ">${confirmarTexto}</button>
+              <button id="btnCancelar" style="
+                background: #e0e0e0;
+                color: #666;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: 500;
+                transition: all 0.2s ease;
+              ">${cancelarTexto}</button>
+            </div>
+          `;
+
+          overlay.appendChild(dialogo);
+          document.body.appendChild(overlay);
+
+          // Event listeners
+          dialogo.querySelector('#btnConfirmar').addEventListener('click', () => {
+            document.body.removeChild(overlay);
+            resolve(true);
+          });
+
+          dialogo.querySelector('#btnCancelar').addEventListener('click', () => {
+            document.body.removeChild(overlay);
+            resolve(false);
+          });
+
+          // Cerrar con ESC
+          document.addEventListener('keydown', function handleEscape(e) {
+            if (e.key === 'Escape') {
+              document.body.removeChild(overlay);
+              document.removeEventListener('keydown', handleEscape);
+              resolve(false);
+            }
+          });
+
+          // Cerrar al hacer clic en el overlay
+          overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+              document.body.removeChild(overlay);
+              resolve(false);
+            }
+          });
+        });
       }
 
       function actualizarPerfil(formData) {
@@ -1189,10 +1329,18 @@ function traducirEstadoSalud($estado) {
         });
       }
 
-      function eliminarMascota(petId) {
-        if (!confirm('¿Estás seguro de que quieres eliminar esta mascota?\n\nEsta acción también eliminará todas las citas programadas para esta mascota.\n\nEsta acción no se puede deshacer.')) {
-          return;
-        }
+      async function eliminarMascota(petId) {
+        const confirmado = await mostrarConfirmacion(
+          '¿Eliminar mascota?',
+          '¿Estás seguro de que quieres eliminar esta mascota?\n\nEsta acción también eliminará todas las citas programadas para esta mascota.\n\nEsta acción no se puede deshacer.',
+          {
+            confirmarTexto: 'Eliminar',
+            cancelarTexto: 'Cancelar',
+            tipo: 'warning'
+          }
+        );
+        
+        if (!confirmado) return;
 
         console.log('Eliminando mascota ID:', petId); // Debug
 
